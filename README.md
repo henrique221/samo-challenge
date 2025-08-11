@@ -4,7 +4,7 @@
 
 **Developer:** Henrique Borges da Silva  
 **Challenge:** Show Us Your Prompt-Crafting Superpower  
-**Model Used:** Google Gemini 1.5 Flash (Multimodal)  
+**Model Used:** Google Gemini 2.5 Flash (Multimodal)  
 
 ---
 
@@ -127,7 +127,7 @@ open http://localhost:5000
 ## 📊 Prompt & Model Details
 
 ### Model Configuration
-- **Primary Model**: Google Gemini 1.5 Flash (multimodal capabilities)
+- **Primary Model**: Google Gemini 2.5 Flash (multimodal capabilities)
 - **Fallback**: Mock analyzer for testing without API key
 - **Context Window**: Processes entire videos up to 1 hour in a single prompt
 
