@@ -85,7 +85,7 @@ Return as structured JSON."""
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/samo-challenge.git
+git clone https://github.com/henrique221/samo-challenge.git
 cd samo-challenge
 
 # 2. Set your Gemini API key (optional - works without for testing)
@@ -102,7 +102,7 @@ open http://localhost:5000
 
 ```bash
 # 1. Clone and setup
-git clone https://github.com/yourusername/samo-challenge.git
+git clone https://github.com/henrique221/samo-challenge.git
 cd samo-challenge
 pip install -r requirements.txt
 
@@ -376,7 +376,7 @@ MIT License - See LICENSE file for details
 
 ## 🎬 Contact
 
-- **GitHub**: [github.com/yourusername/samo-challenge](https://github.com/henrique221/samo-challenge)
+- **GitHub**: [github.com/henrique221/samo-challenge](https://github.com/henrique221/samo-challenge)
 - **Contact**: hborgesdasilva9294@gmail.com
 
 ---
