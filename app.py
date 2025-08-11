@@ -304,6 +304,20 @@ def download_video():
         # Garantir que seja MP4
         cmd.extend(['--merge-output-format', 'mp4'])
         
+        # Add user agent and other options to avoid bot detection
+        cmd.extend([
+            '--user-agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            '--referer', 'https://www.youtube.com/',
+            '--add-header', 'Accept-Language:en-US,en;q=0.9',
+            '--no-check-certificate',
+            '--no-cache-dir'
+        ])
+        
+        # Try to use cookies if available
+        cookies_file = Path('/app/cookies.txt')
+        if cookies_file.exists():
+            cmd.extend(['--cookies', str(cookies_file)])
+        
         cmd.append(url)
         
         # Executar download
@@ -382,6 +396,15 @@ def download_video():
                     return jsonify({'error': 'Arquivo não encontrado após download'}), 500
         else:
             error_msg = result.stderr[:500] if result.stderr else 'Erro no download'
+            
+            # Check for bot detection error
+            if 'Sign in to confirm' in error_msg or 'bot' in error_msg.lower():
+                return jsonify({
+                    'error': 'YouTube is requiring authentication. This happens when too many requests are made. Please try again later or use a different video.',
+                    'suggestion': 'Try using a different YouTube video or wait a few minutes before trying again.',
+                    'technical_error': error_msg
+                }), 429
+            
             return jsonify({'error': error_msg}), 500
             
     except subprocess.TimeoutExpired:

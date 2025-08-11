@@ -2211,6 +2211,20 @@
                 
                 const data = await response.json();
                 
+                // Check for YouTube bot detection error
+                if (response.status === 429 && data.error) {
+                    showAlert(
+                        `<i class="bi bi-exclamation-triangle"></i> 
+                        <strong>YouTube Authentication Required</strong><br>
+                        ${data.error}<br><br>
+                        <strong>Suggestion:</strong> ${data.suggestion || 'Try a different video or wait a few minutes.'}`,
+                        'warning'
+                    );
+                    document.getElementById('analyzeBtn').disabled = false;
+                    document.getElementById('analyzeBtn').innerHTML = '<i class="bi bi-play-circle"></i> Analyze Video';
+                    return;
+                }
+                
                 if (data.success) {
                     currentVideo = data;
                     
