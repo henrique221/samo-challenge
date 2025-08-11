@@ -51,9 +51,9 @@ Return as structured JSON."""
 ## ✨ Key Features
 
 ### 🎥 Video Input Options
-- **YouTube Integration**: Direct analysis of YouTube videos via URL
 - **File Upload**: Drag-and-drop support for local video files (MP4, AVI, MOV, MKV, WEBM)
-- **Smart Transcription**: Leverages YouTube transcripts when available for faster processing
+- **Example Videos**: Pre-loaded sample videos from the /examples folder for quick testing
+- **Smart Transcription**: Automatic video transcription using AI for content extraction
 
 ### 🧠 Seven Analysis Modes (One-Shot Each)
 1. **📝 Summary** - Comprehensive overview with key topics and timestamps
@@ -69,6 +69,13 @@ Return as structured JSON."""
 - **Timestamp Navigation**: Click any timestamp to jump to that moment
 - **Visual Timeline**: See key moments marked on the video progress bar
 - **Streaming Responses**: Real-time AI responses using Server-Sent Events
+
+### 🎨 UI Features
+- **Professional Video Player**: Custom HTML5 controls with play/pause, seek, volume, speed control, picture-in-picture, and fullscreen
+- **Drag & Drop Upload**: Intuitive file upload with visual feedback
+- **Example Video Gallery**: Quick access to pre-loaded sample videos
+- **Two-Step Loading**: Clean progress indicator showing Processing and Analysis stages
+- **Responsive Design**: Works seamlessly on desktop and mobile devices
 
 ---
 
@@ -110,9 +117,9 @@ open http://localhost:5000
 ```
 
 ### Try It Out!
-1. **Paste this YouTube URL**: `https://www.youtube.com/watch?v=Ata9cSC2WpM` (Angular Tutorial)
-2. Click **"Analyze"**
-3. Select **"Key Moments"** mode
+1. **Upload a video file** or **select an example video** from the pre-loaded samples
+2. Wait for automatic transcription to complete
+3. Select **"Key Moments"** mode from the analysis options
 4. Watch as the AI extracts all important points in seconds!
 
 ---
@@ -134,8 +141,8 @@ Be concise but comprehensive."""
 ```
 
 ### Tool Integration
-- **YouTube Transcript API**: Fetches existing captions when available
-- **FFprobe**: Extracts video metadata for uploaded files
+- **Google Gemini API**: Multimodal AI for video analysis and transcription
+- **FFmpeg**: Video processing and format handling
 - **Server-Sent Events**: Streams chat responses in real-time
 
 ---
@@ -150,7 +157,7 @@ Be concise but comprehensive."""
 1. **Multimodal Understanding**: Analyzes both visual and audio content simultaneously
 2. **Seven Perspectives**: One video generates seven different analytical viewpoints
 3. **Interactive Knowledge Base**: Transforms static videos into queryable databases
-4. **Hybrid Intelligence**: Combines YouTube's transcripts with Gemini's visual understanding
+4. **AI-Powered Transcription**: Direct video-to-text conversion using Gemini's multimodal capabilities
 
 ### Technical Innovation
 - **One-Shot Processing**: Entire videos analyzed in single API calls
@@ -167,10 +174,13 @@ samo-challenge/
 ├── app.py                    # Flask server with API endpoints
 ├── video_analyzer.py         # Core prompt engineering & Gemini integration
 ├── templates/
-│   └── index.html           # Modern, responsive UI
+│   └── index.html           # Modern, responsive UI with video player
+├── examples/                # Pre-loaded example videos
+├── downloads/              # Temporary video storage
 ├── requirements.txt         # Python dependencies
 ├── Dockerfile              # Container configuration
 ├── docker-compose.yml      # Service orchestration
+├── CLAUDE.md              # Development guide and notes
 └── README.md              # This file
 ```
 
@@ -188,6 +198,8 @@ samo-challenge/
 
 **`templates/index.html`** - Interactive frontend:
 - Drag-and-drop video upload
+- Professional HTML5 video player with custom controls
+- Example video gallery from /examples folder
 - Real-time analysis display
 - Clickable timestamps and chat interface
 
@@ -259,21 +271,22 @@ along with the timestamp when each is first discussed."
 
 ### Batch Processing (CLI)
 ```bash
-# Analyze multiple videos
-for url in $(cat video_urls.txt); do
-  curl -X POST http://localhost:5000/download \
-    -H "Content-Type: application/json" \
-    -d "{\"url\": \"$url\"}"
-done
+# Analyze uploaded videos
+curl -X POST http://localhost:5000/upload \
+  -F "video=@path/to/video.mp4"
+
+# Analyze example videos
+curl -X POST http://localhost:5000/load-example/example.mp4
 ```
 
 ### API Integration
 ```python
 import requests
 
-# Download and analyze video
-response = requests.post('http://localhost:5000/download', 
-    json={'url': 'https://youtube.com/watch?v=...'})
+# Upload and analyze video
+with open('video.mp4', 'rb') as f:
+    response = requests.post('http://localhost:5000/upload', 
+        files={'video': f})
 
 # Run sentiment analysis
 analysis = requests.post('http://localhost:5000/analyze',
@@ -283,6 +296,24 @@ print(analysis.json()['result'])
 ```
 
 ---
+
+## 📡 API Endpoints
+
+### Core Endpoints
+- `POST /upload` - Upload video file for analysis
+- `POST /transcribe` - Generate transcript from uploaded video
+- `POST /analyze` - Analyze video with selected mode
+- `GET /chat/stream` - Server-sent events for streaming chat
+- `POST /cleanup` - Remove session files
+
+### Example Video Endpoints
+- `GET /list-examples` - List available example videos
+- `POST /load-example/<filename>` - Load and prepare example video
+
+### Utility Endpoints
+- `GET /analysis-modes` - Get available analysis modes
+- `GET /files/<filename>` - Serve uploaded video files
+- `GET /stream/<filename>` - Stream video content
 
 ## 🔧 Configuration
 
@@ -315,6 +346,7 @@ services:
 - **File Size**: 500MB max for uploads
 - **Video Length**: Best results with videos under 1 hour
 - **Language**: English-optimized (other languages work with varying accuracy)
+- **API Requirements**: Requires Google Gemini API key for full functionality (mock mode available for testing)
 
 ---
 
@@ -337,7 +369,7 @@ MIT License - See LICENSE file for details
 ## 🙏 Acknowledgments
 
 - **Google Gemini Team** - For the powerful multimodal API
-- **yt-dlp Community** - For robust video downloading
+- **Flask Community** - For the robust web framework
 - **Samo** - For the inspiring prompt-crafting challenge
 
 ---

@@ -33,8 +33,8 @@ COPY app.py .
 COPY video_analyzer.py .
 COPY templates templates/
 
-# Create downloads directory
-RUN mkdir -p downloads
+# Create downloads and examples directories
+RUN mkdir -p downloads examples
 
 # Expose port 5000
 EXPOSE 5000

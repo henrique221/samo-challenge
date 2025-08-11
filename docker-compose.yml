@@ -8,6 +8,7 @@ services:
       - "5000:5000"
     volumes:
       - ./downloads:/app/downloads
+      - ./examples:/app/examples
       - ./app.py:/app/app.py
       - ./templates:/app/templates
     environment:

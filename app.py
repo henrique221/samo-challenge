@@ -335,7 +335,8 @@ def upload_video():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/download', methods=['POST'])
+# YouTube download endpoint removed - only file upload is supported now
+'''@app.route('/download', methods=['POST'])
 def download_video():
     """Processa o download do vídeo e retorna informações completas"""
     try:
@@ -611,8 +612,10 @@ def download_video():
         return jsonify({'error': 'Download demorou muito tempo'}), 500
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+'''
 
-@app.route('/info', methods=['POST'])
+# YouTube info endpoint also removed - only file upload is supported
+'''@app.route('/info', methods=['POST'])
 def get_video_info():
     """Obtém informações do vídeo sem baixar"""
     try:
@@ -646,6 +649,7 @@ def get_video_info():
             
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+'''
 
 @app.route('/files/<filename>')
 def download_file(filename):
@@ -954,6 +958,84 @@ def get_analysis_modes():
         {'id': 'custom', 'name': 'Personalizado', 'emoji': '🔧'}
     ]
     return jsonify(modes)
+
+@app.route('/list-examples')
+def list_example_videos():
+    """List videos from the examples directory"""
+    try:
+        examples_dir = Path("examples")
+        examples_dir.mkdir(exist_ok=True)
+        
+        # Supported video extensions
+        video_extensions = {'.mp4', '.avi', '.mov', '.mkv', '.webm'}
+        
+        examples = []
+        for file_path in examples_dir.iterdir():
+            if file_path.is_file() and file_path.suffix.lower() in video_extensions:
+                # Create a display name from the filename
+                display_name = file_path.stem.replace('_', ' ').replace('-', ' ').title()
+                
+                examples.append({
+                    'filename': file_path.name,
+                    'display_name': display_name,
+                    'name': file_path.stem,
+                    'size': f'{file_path.stat().st_size / (1024 * 1024):.2f} MB',
+                    'extension': file_path.suffix
+                })
+        
+        # Sort by name
+        examples.sort(key=lambda x: x['display_name'])
+        
+        return jsonify(examples)
+    except Exception as e:
+        return jsonify({'error': str(e), 'examples': []}), 500
+
+@app.route('/load-example/<filename>')
+def load_example_video(filename):
+    """Load an example video for analysis"""
+    try:
+        # Validate filename to prevent directory traversal
+        if '..' in filename or '/' in filename or '\\' in filename:
+            return jsonify({'error': 'Invalid filename'}), 400
+        
+        examples_dir = Path("examples")
+        source_path = examples_dir / filename
+        
+        if not source_path.exists():
+            return jsonify({'error': 'Example video not found'}), 404
+        
+        # Generate a unique filename for the session
+        timestamp = str(int(time.time()))
+        safe_name = "".join(c for c in Path(filename).stem if c.isalnum() or c in (' ', '-', '_')).rstrip()[:100]
+        new_filename = f"example_{safe_name}_{timestamp}{source_path.suffix}"
+        dest_path = DOWNLOADS_DIR / new_filename
+        
+        # Copy the example file to downloads directory
+        import shutil
+        shutil.copy2(str(source_path), str(dest_path))
+        
+        # Track file in session
+        if 'session_id' not in session:
+            session['session_id'] = secrets.token_hex(16)
+        
+        session_id = session['session_id']
+        if session_id not in session_files:
+            session_files[session_id] = []
+        session_files[session_id].append(new_filename)
+        
+        # Get file info
+        file_size = dest_path.stat().st_size / (1024 * 1024)  # MB
+        
+        return jsonify({
+            'success': True,
+            'filename': new_filename,
+            'title': Path(filename).stem.replace('_', ' ').replace('-', ' ').title(),
+            'size': f'{file_size:.2f} MB',
+            'message': 'Example video loaded successfully'
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

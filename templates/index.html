@@ -1087,84 +1087,6 @@
             opacity: 1;
         }
         
-        /* Chapter Navigation */
-        .video-chapters {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 8px;
-            padding: 10px;
-            max-width: 300px;
-            max-height: 200px;
-            overflow-y: auto;
-            display: none;
-            z-index: 20;
-        }
-        
-        .video-chapters.show {
-            display: block;
-        }
-        
-        .video-chapters h4 {
-            color: white;
-            margin: 0 0 10px 0;
-            font-size: 0.9em;
-            font-weight: 600;
-        }
-        
-        .chapter-item {
-            color: rgba(255, 255, 255, 0.8);
-            padding: 6px 8px;
-            margin-bottom: 4px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85em;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .chapter-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-        }
-        
-        .chapter-item.active {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .chapter-time {
-            font-weight: 600;
-            color: var(--secondary);
-            min-width: 45px;
-        }
-        
-        .chapter-item.active .chapter-time {
-            color: white;
-        }
-        
-        /* Toggle Chapters Button */
-        .toggle-chapters {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85em;
-            z-index: 15;
-            transition: all 0.2s;
-        }
-        
-        .toggle-chapters:hover {
-            background: rgba(0, 0, 0, 0.7);
-        }
         
         .video-placeholder {
             color: #666;
@@ -1470,24 +1392,27 @@
         
         .insight-item.timecode {
             cursor: pointer;
-            padding-left: 60px;
+            padding: 16px;
+            transition: background 0.2s ease;
+        }
+        
+        .insight-item.timecode:hover {
+            background: rgba(255, 255, 255, 0.08);
         }
         
         .insight-item .timecode-badge {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
             background: var(--primary);
             color: white;
-            padding: 4px 8px;
+            padding: 6px 12px;
             border-radius: 6px;
             font-size: 0.85em;
             font-weight: 600;
+            transition: all 0.2s ease;
         }
         
         .insight-item.timecode:hover .timecode-badge {
             background: var(--primary-dark);
+            transform: scale(1.05);
         }
         
         /* Clickable timestamp styles */
@@ -1890,9 +1815,354 @@
         .example-video-btn i {
             font-size: 1em;
         }
+        
+        /* Info Button */
+        .info-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--gradient-orange);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .info-button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.5);
+        }
+        
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-content {
+            background: var(--surface);
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            border: 1px solid var(--border-light);
+            animation: slideUp 0.3s ease;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 107, 53, 0.2);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+        
+        .modal-header {
+            padding: 40px 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .modal-header h2 {
+            font-size: 2.2em;
+            font-weight: 700;
+            background: var(--gradient-orange);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .modal-header p {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+        }
+        
+        .modal-body {
+            padding: 30px 40px;
+        }
+        
+        .modal-section {
+            margin-bottom: 30px;
+        }
+        
+        .modal-section h3 {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .modal-section h3 i {
+            font-size: 0.9em;
+        }
+        
+        .modal-section p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+        
+        .modal-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+        
+        .modal-section ul li {
+            color: var(--text-secondary);
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .modal-section ul li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .modal-section .mode-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            border: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-section .mode-item:hover {
+            background: rgba(255, 107, 53, 0.05);
+            border-color: rgba(255, 107, 53, 0.2);
+        }
+        
+        .modal-section .mode-item i {
+            color: var(--primary);
+            font-size: 1.2em;
+            margin-top: 2px;
+        }
+        
+        .modal-section .mode-item div {
+            flex: 1;
+        }
+        
+        .modal-section .mode-item strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 4px;
+        }
+        
+        .modal-section .mode-item span {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+        
+        .modal-footer {
+            padding: 20px 40px 30px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+        
+        .modal-action-btn {
+            background: var(--gradient-orange);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
     </style>
 </head>
 <body>
+    <!-- Info Modal -->
+    <div class="modal-overlay" id="infoModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeInfoModal()">&times;</button>
+            
+            <div class="modal-header">
+                <h2 style="color: var(--primary); margin: 0; font-size: 1.8em;">
+                    🎬 Video Intelligence System
+                </h2>
+                <p style="color: rgba(255, 255, 255, 0.7); margin: 5px 0; font-size: 0.95em;">
+                    One-Shot Multimodal Prompt Engineering Challenge
+                </p>
+            </div>
+            
+            <div class="modal-body">
+                <div class="modal-section">
+                    <h3 style="color: var(--primary); font-size: 1.1em; margin-bottom: 10px;">
+                        <i class="bi bi-trophy"></i> Challenge Solution
+                    </h3>
+                    <p style="color: rgba(255, 255, 255, 0.85); line-height: 1.6;">
+                        This project demonstrates <strong>7 carefully crafted one-shot prompts</strong> that transform any video into structured, searchable knowledge. Each prompt analyzes an entire video in a single API call using Google Gemini's multimodal capabilities.
+                    </p>
+                </div>
+
+                <div class="modal-section">
+                    <h3 style="color: var(--primary); font-size: 1.1em; margin-bottom: 10px;">
+                        <i class="bi bi-lightbulb"></i> The Innovation
+                    </h3>
+                    <div class="feature-grid">
+                        <div class="feature-item">
+                            <strong>📝 Summary</strong>
+                            <span>Comprehensive overview with timestamps</span>
+                        </div>
+                        <div class="feature-item">
+                            <strong>🔑 Key Moments</strong>
+                            <span>Critical points with importance ratings</span>
+                        </div>
+                        <div class="feature-item">
+                            <strong>💬 Transcript</strong>
+                            <span>Complete audio/visual extraction</span>
+                        </div>
+                        <div class="feature-item">
+                            <strong>👁️ Objects</strong>
+                            <span>Scene-by-scene detection</span>
+                        </div>
+                        <div class="feature-item">
+                            <strong>😊 Sentiment</strong>
+                            <span>Emotional analysis & mood tracking</span>
+                        </div>
+                        <div class="feature-item">
+                            <strong>🎓 Educational</strong>
+                            <span>Learning objectives & concepts</span>
+                        </div>
+                        <div class="feature-item">
+                            <strong>🔧 Custom</strong>
+                            <span>User-defined analysis prompts</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-section">
+                    <h3 style="color: var(--primary); font-size: 1.1em; margin-bottom: 10px;">
+                        <i class="bi bi-rocket"></i> Why It's Useful
+                    </h3>
+                    <p style="color: rgba(255, 255, 255, 0.85); line-height: 1.6;">
+                        <strong>Before:</strong> Watch a 60-minute lecture to find one concept → <span style="color: #f44336;">60 minutes</span><br>
+                        <strong>After:</strong> Get summary + search specific topics → <span style="color: #4caf50;">30 seconds</span>
+                    </p>
+                    <p style="color: rgba(255, 255, 255, 0.75); font-size: 0.9em; margin-top: 10px;">
+                        Billions of hours of video content exist online, but the knowledge within is locked away. This system unlocks that knowledge instantly.
+                    </p>
+                </div>
+
+                <div class="modal-section">
+                    <h3 style="color: var(--primary); font-size: 1.1em; margin-bottom: 10px;">
+                        <i class="bi bi-play-circle"></i> How to Use
+                    </h3>
+                    <ol style="color: rgba(255, 255, 255, 0.85); line-height: 1.8; margin: 0; padding-left: 20px;">
+                        <li>Upload a video or select an example</li>
+                        <li>Wait for automatic transcription</li>
+                        <li>Choose an analysis mode</li>
+                        <li>Chat with AI about the content</li>
+                    </ol>
+                </div>
+
+                <div class="modal-section" style="background: rgba(255, 255, 255, 0.05); padding: 15px; border-radius: 8px;">
+                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.85em; text-align: center; margin: 0;">
+                        <strong>Developer:</strong> Henrique Borges da Silva<br>
+                        <strong>Model:</strong> Google Gemini 1.5 Flash (Multimodal)<br>
+                        <strong>Challenge:</strong> Show Us Your Prompt-Crafting Superpower
+                    </p>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="modal-action-btn" onclick="closeInfoModal()">
+                    Start Exploring <i class="bi bi-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Button (Top Right) -->
+    <button class="info-button" onclick="openInfoModal()" title="About this project">
+        <i class="bi bi-info-circle"></i>
+    </button>
+    
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
         <div class="loading-content">
@@ -1918,12 +2188,6 @@
                 </div>
             </div>
             <div class="loading-steps">
-                <div class="loading-step" id="step-download">
-                    <div class="loading-step-icon">
-                        <i class="bi bi-download"></i>
-                    </div>
-                    <div class="loading-step-label">Download</div>
-                </div>
                 <div class="loading-step" id="step-process">
                     <div class="loading-step-icon">
                         <i class="bi bi-gear"></i>
@@ -1947,40 +2211,12 @@
             <p>Advanced Video Intelligence & Real-time Analysis</p>
         </div>
         
-        <!-- URL/Upload Input -->
+        <!-- Video Upload Input -->
         <div class="input-section centered" id="inputSection">
             <div id="alert" class="alert"></div>
             
-            <!-- Input Type Selector -->
-            <div class="input-type-selector" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
-                <button class="input-type-btn active" onclick="switchInputType('url')" data-type="url" style="padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
-                    <i class="bi bi-link-45deg"></i> YouTube URL
-                </button>
-                <button class="input-type-btn" onclick="switchInputType('upload')" data-type="upload" style="padding: 10px 20px; background: var(--surface-light); color: white; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
-                    <i class="bi bi-cloud-upload"></i> Upload Video
-                </button>
-            </div>
-            
-            <!-- URL Input Form -->
-            <form id="analyzeForm" class="input-form" data-type="url">
-                <div class="video-input-container">
-                    <div class="video-input-wrapper">
-                        <i class="bi bi-link-45deg input-icon"></i>
-                        <input type="url" 
-                               id="videoUrl" 
-                               class="video-input"
-                               placeholder="Paste YouTube video URL here..." 
-                               required>
-                        <button type="submit" class="btn-analyze-modern">
-                            <i class="bi bi-play-circle-fill"></i>
-                            <span>Analyze</span>
-                        </button>
-                    </div>
-                </div>
-            </form>
-            
             <!-- File Upload Form -->
-            <form id="uploadForm" class="input-form" data-type="upload" style="display: none;">
+            <form id="uploadForm" class="input-form" data-type="upload">
                 <div class="video-input-container">
                     <div class="upload-area" style="border: 2px dashed var(--border); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.3s;" 
                          onclick="document.getElementById('videoFile').click();"
@@ -2018,26 +2254,12 @@
             </form>
             
             <!-- Example Videos -->
-            <div style="margin-top: 20px; text-align: center;">
+            <div style="margin-top: 20px; text-align: center;" id="exampleVideosSection">
                 <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9em; margin-bottom: 12px;">
-                    <i class="bi bi-lightbulb"></i> Try these example videos:
+                    <i class="bi bi-lightbulb"></i> Or try an example video:
                 </p>
-                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-                    <button onclick="loadExampleVideo('https://www.youtube.com/watch?v=Ata9cSC2WpM')" 
-                            class="example-video-btn"
-                            title="Angular in 100 Seconds">
-                        <i class="bi bi-play-circle"></i> Angular Tutorial
-                    </button>
-                    <button onclick="loadExampleVideo('https://www.youtube.com/watch?v=8eVXTyIZ1Hs')" 
-                            class="example-video-btn"
-                            title="What Is Agile Methodology?">
-                        <i class="bi bi-play-circle"></i> What Is Agile Methodology?
-                    </button>
-                    <button onclick="loadExampleVideo('https://www.youtube.com/watch?v=YysKbNk1tj0')" 
-                            class="example-video-btn"
-                            title="How to start with React native">
-                        <i class="bi bi-play-circle"></i> How to start with React Native
-                    </button>
+                <div id="exampleVideosList" style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <!-- Example videos will be loaded dynamically -->
                 </div>
             </div>
         </div>
@@ -2111,16 +2333,6 @@
                         <div class="video-timeline-progress" id="timelineProgress"></div>
                     </div>
                     
-                    <!-- Chapters Toggle Button -->
-                    <button class="toggle-chapters" id="toggleChapters" style="display: none;" onclick="toggleChapters()">
-                        <i class="bi bi-list-ul"></i> Chapters
-                    </button>
-                    
-                    <!-- Video Chapters Panel -->
-                    <div class="video-chapters" id="videoChapters">
-                        <h4><i class="bi bi-bookmark-fill"></i> Video Chapters</h4>
-                        <div id="chaptersList"></div>
-                    </div>
                 </div>
                 <div class="video-info" id="videoInfo" style="display: none;">
                     <div class="video-title" id="videoTitle"></div>
@@ -2232,12 +2444,28 @@
         let currentVideo = null;
         let chatHistory = [];
         let videoMarkers = [];
-        let currentChapterIndex = -1;
         
-        // Form submit - use the complete flow
-        document.getElementById('analyzeForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            await processVideoComplete();
+        // Modal functions
+        function openInfoModal() {
+            const modal = document.getElementById('infoModal');
+            if (modal) {
+                modal.classList.add('active');
+            }
+        }
+        
+        function closeInfoModal() {
+            const modal = document.getElementById('infoModal');
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+        
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('infoModal');
+            if (e.target === modal) {
+                closeInfoModal();
+            }
         });
         
         // Upload form submit
@@ -2246,6 +2474,9 @@
             await uploadAndAnalyzeVideo();
         });
         
+        // Load example videos on page load
+        loadExampleVideos();
+        
         // Video player event listeners
         document.getElementById('videoPlayer').addEventListener('loadedmetadata', function() {
             setupVideoTimeline();
@@ -2253,7 +2484,6 @@
         
         document.getElementById('videoPlayer').addEventListener('timeupdate', function() {
             updateTimelineProgress();
-            updateActiveChapter();
         });
         
         // Timeline click handler
@@ -2312,10 +2542,173 @@
             }
         }
         
-        function loadExampleVideo(url) {
-            document.getElementById('videoUrl').value = url;
-            // Optional: auto-submit the form
-            document.getElementById('analyzeForm').dispatchEvent(new Event('submit'));
+        // Load example videos from /examples directory
+        async function loadExampleVideos() {
+            try {
+                const response = await fetch('/list-examples');
+                const examples = await response.json();
+                
+                const container = document.getElementById('exampleVideosList');
+                
+                if (examples.length === 0) {
+                    container.innerHTML = '<p style="color: rgba(255, 255, 255, 0.5); font-size: 0.85em;">No example videos available. Add videos to the /examples directory.</p>';
+                    return;
+                }
+                
+                container.innerHTML = '';
+                examples.forEach(video => {
+                    const button = document.createElement('button');
+                    button.className = 'example-video-btn';
+                    button.title = video.name;
+                    button.innerHTML = `<i class="bi bi-play-circle"></i> ${video.display_name}`;
+                    button.onclick = () => loadExampleVideo(video.filename);
+                    container.appendChild(button);
+                });
+            } catch (error) {
+                console.error('Failed to load example videos:', error);
+            }
+        }
+        
+        async function loadExampleVideo(filename) {
+            try {
+                // Show loading overlay - same as upload flow
+                showLoading('Loading example video...', 'Please wait while we prepare the video');
+                updateLoadingStep('process', 'active');
+                startMessageRotation('process');
+                
+                // Step 1: Load the example video
+                const loadResponse = await fetch(`/load-example/${filename}`);
+                const uploadData = await loadResponse.json();
+                
+                if (!uploadData.success) {
+                    throw new Error(uploadData.error || 'Failed to load example video');
+                }
+                
+                // Store video data (same as upload flow)
+                currentVideo = uploadData;
+                currentVideo.filename = uploadData.filename;
+                currentVideoFile = uploadData.filename;
+                
+                // Update loading state
+                showLoading('Processing video...', 'Preparing your video for analysis');
+                startMessageRotation('process');
+                
+                // Fetch transcription and wait for it
+                if (uploadData.filename) {
+                    const transcription = await fetchTranscription(uploadData.filename);
+                    if (transcription && currentVideo) {
+                        currentVideo.transcription = transcription;
+                        console.log('Transcription ready for chat');
+                    } else {
+                        console.warn('No transcription available - chat may be limited');
+                        if (currentVideo) {
+                            currentVideo.transcription = '';
+                        }
+                    }
+                }
+                
+                // Wait a bit for visual effect
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Step 2: Analyze video
+                updateLoadingStep('process', 'completed');
+                updateLoadingStep('analyze', 'active');
+                showLoading('Analyzing video...', 'AI is processing your video');
+                startMessageRotation('analyze');
+                
+                const analyzeResponse = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        filename: uploadData.filename,
+                        mode: 'summary'
+                    })
+                });
+                
+                const analyzeData = await analyzeResponse.json();
+                
+                if (!analyzeData.success) {
+                    throw new Error(analyzeData.error || 'Analysis failed');
+                }
+                
+                // Store analysis result
+                currentVideo.analysis = analyzeData.result;
+                
+                // Complete loading
+                updateLoadingStep('analyze', 'completed');
+                showLoading('Almost ready...', 'Preparing your results');
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Hide loading overlay and show main content (same as upload flow)
+                hideLoading();
+                document.getElementById('inputSection').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'grid';
+                
+                // Load video player
+                const videoPlayer = document.getElementById('videoPlayer');
+                videoPlayer.src = `/stream/${uploadData.filename}`;
+                videoPlayer.style.display = 'block';
+                document.getElementById('videoPlaceholder').style.display = 'none';
+                
+                // Initialize custom video controls
+                setTimeout(initializeVideoControls, 100);
+                
+                // Show video info if available
+                if (uploadData.title) {
+                    document.getElementById('videoTitle').textContent = uploadData.title;
+                    document.getElementById('videoMeta').innerHTML = `
+                        <span><i class="bi bi-film"></i> Example Video</span>
+                        <span><i class="bi bi-hdd"></i> ${uploadData.size}</span>
+                    `;
+                    document.getElementById('videoInfo').style.display = 'block';
+                }
+                
+                // Show analysis section with slight delay
+                setTimeout(() => {
+                    const analysisSection = document.getElementById('analysisSection');
+                    if (analysisSection) {
+                        analysisSection.style.display = 'block';
+                        analysisSection.classList.add('fade-in');
+                    }
+                    
+                    // Show mode selector
+                    document.getElementById('modeSelector').style.display = 'block';
+                    document.getElementById('analysisLoading').style.display = 'none';
+                    
+                    // Display the initial analysis results
+                    displayAnalysisResults(analyzeData.result);
+                    
+                    // Update UI state
+                    document.getElementById('analysisStatus').style.display = 'inline-block';
+                    
+                    // Enable all mode pills
+                    document.querySelectorAll('.mode-pill').forEach(btn => {
+                        btn.disabled = false;
+                    });
+                    
+                    // Show chat section after analysis is complete
+                    const chatSection = document.getElementById('chatSection');
+                    if (chatSection) {
+                        setTimeout(() => {
+                            chatSection.style.display = 'block';
+                            chatSection.classList.add('fade-in');
+                            enableChat();
+                        }, 300);
+                    }
+                    
+                    // Clear file selection for next upload
+                    clearFileSelection();
+                    
+                    // Show success message
+                    showAlert('<i class="bi bi-check-circle"></i> Example video loaded and analyzed successfully!', 'success');
+                }, 300);
+                
+            } catch (error) {
+                hideLoading();
+                showAlert(`<i class="bi bi-x-circle"></i> Error: ${error.message}`, 'error');
+                console.error('Example video error:', error);
+            }
         }
         
         function escapeHtml(text) {
@@ -2327,30 +2720,7 @@
         // File upload handling functions
         let selectedFile = null;
         
-        function switchInputType(type) {
-            // Update button states
-            document.querySelectorAll('.input-type-btn').forEach(btn => {
-                if (btn.dataset.type === type) {
-                    btn.classList.add('active');
-                    btn.style.background = 'var(--primary)';
-                } else {
-                    btn.classList.remove('active');
-                    btn.style.background = 'var(--surface-light)';
-                }
-            });
-            
-            // Show/hide forms
-            document.querySelectorAll('.input-form').forEach(form => {
-                if (form.dataset.type === type) {
-                    form.style.display = 'block';
-                } else {
-                    form.style.display = 'none';
-                }
-            });
-            
-            // Clear any alerts
-            document.getElementById('alert').style.display = 'none';
-        }
+        // Removed switchInputType - only upload is supported now
         
         function handleFileSelect(event) {
             const file = event.target.files[0];
@@ -2483,8 +2853,8 @@
             
             // Show loading overlay - same as YouTube flow
             showLoading('Uploading video...', 'Please wait while we upload your video');
-            updateLoadingStep('download', 'active');
-            startMessageRotation('download');
+            updateLoadingStep('process', 'active');
+            startMessageRotation('process');
             
             try {
                 // Step 1: Upload video
@@ -2512,8 +2882,6 @@
                 currentVideoFile = uploadData.filename;
                 
                 // Update loading state
-                updateLoadingStep('download', 'completed');
-                updateLoadingStep('process', 'active');
                 showLoading('Processing video...', 'Preparing your video for analysis');
                 startMessageRotation('process');
                 
@@ -2629,7 +2997,9 @@
             }
         }
         
-        async function analyzeVideo() {
+        // Removed analyzeVideo function - only file upload is supported
+        
+        /*async function analyzeVideo() {
             const url = document.getElementById('videoUrl').value;
             
             if (!url) {
@@ -2778,7 +3148,7 @@
                 showAlert(`<i class="bi bi-x-circle"></i> Error: ${error.message}`, 'error');
                 document.getElementById('analysisLoading').style.display = 'none';
             }
-        }
+        }*/
         
         async function fetchTranscription(filename) {
             try {
@@ -2923,50 +3293,157 @@
             
             console.log('Displaying analysis results:', result);
             
+            // Get the current mode from the result or global selectedMode
+            const currentMode = result.mode || selectedMode || 'summary';
+            console.log('Current analysis mode:', currentMode);
+            
             // Check if result has analysis object (new format from real API)
             if (result.analysis) {
                 let analysis = result.analysis;
                 
-                // Handle nested analysis structure from Gemini API
-                if (typeof analysis.analysis === 'string') {
-                    // Parse JSON from markdown code block
+                // Handle string analysis (might be JSON in string format)
+                if (typeof analysis === 'string') {
                     try {
-                        // Extract JSON from markdown code block if present
-                        const jsonMatch = analysis.analysis.match(/```json\n([\s\S]*?)\n```/);
-                        if (jsonMatch) {
-                            analysis = JSON.parse(jsonMatch[1]);
-                            console.log('Parsed JSON from markdown:', analysis);
-                        } else {
-                            // Try direct parse if no markdown wrapper
-                            analysis = JSON.parse(analysis.analysis);
-                            console.log('Parsed direct JSON:', analysis);
-                        }
+                        // Try to parse as JSON
+                        analysis = JSON.parse(analysis);
+                        console.log('Parsed analysis string as JSON:', analysis);
                     } catch (e) {
-                        console.error('Failed to parse analysis JSON:', e);
-                        // Fallback to display as text
+                        // If not JSON, display as formatted text
                         const textDiv = document.createElement('div');
                         textDiv.className = 'insight-item';
-                        textDiv.innerHTML = `<pre style="white-space: pre-wrap; color: rgba(255, 255, 255, 0.85);">${analysis.analysis}</pre>`;
+                        textDiv.innerHTML = `
+                            <h3 style="color: var(--primary); margin-bottom: 10px;">
+                                <i class="bi bi-file-text"></i> Analysis Result
+                            </h3>
+                            <pre style="white-space: pre-wrap; color: rgba(255, 255, 255, 0.85); font-family: inherit; font-size: 0.95em; line-height: 1.6;">${escapeHtml(analysis)}</pre>
+                        `;
                         container.appendChild(textDiv);
                         return;
                     }
-                } else if (typeof analysis === 'object' && analysis.analysis) {
-                    // Double nested structure
-                    analysis = analysis.analysis;
+                }
+                
+                // Handle nested analysis structure from Gemini API
+                if (typeof analysis === 'object' && analysis.analysis) {
+                    // Double nested structure - flatten it
+                    if (typeof analysis.analysis === 'string') {
+                        try {
+                            // Extract JSON from markdown code block if present
+                            const jsonMatch = analysis.analysis.match(/```json\n([\s\S]*?)\n```/);
+                            if (jsonMatch) {
+                                analysis = JSON.parse(jsonMatch[1]);
+                                console.log('Parsed JSON from markdown:', analysis);
+                            } else {
+                                // Try direct parse if no markdown wrapper
+                                analysis = JSON.parse(analysis.analysis);
+                                console.log('Parsed direct JSON:', analysis);
+                            }
+                        } catch (e) {
+                            console.error('Failed to parse nested analysis JSON:', e);
+                            // Display as formatted text
+                            const textDiv = document.createElement('div');
+                            textDiv.className = 'insight-item';
+                            textDiv.innerHTML = `
+                                <h3 style="color: var(--primary); margin-bottom: 10px;">
+                                    <i class="bi bi-file-text"></i> Analysis Result
+                                </h3>
+                                <pre style="white-space: pre-wrap; color: rgba(255, 255, 255, 0.85); font-family: inherit; font-size: 0.95em; line-height: 1.6;">${escapeHtml(analysis.analysis)}</pre>
+                            `;
+                            container.appendChild(textDiv);
+                            return;
+                        }
+                    } else {
+                        // It's already an object, just use it
+                        analysis = analysis.analysis;
+                    }
                 }
                 
                 console.log('Final analysis object:', analysis);
+                
+                // Check if analysis is directly an array (e.g., key_moments mode)
+                if (Array.isArray(analysis)) {
+                    console.log('Analysis is an array, likely key_moments or similar');
+                    // Convert array to object with moments property for uniform handling
+                    analysis = { moments: analysis };
+                }
                 
                 // Handle various nested structures from different modes
                 // Sentiment mode - flatten sentiment_analysis structure
                 if (analysis.sentiment_analysis) {
                     Object.assign(analysis, {
                         overall_sentiment: analysis.sentiment_analysis.overall_sentiment,
-                        emotional_moments: analysis.sentiment_analysis.emotional_moments,
+                        emotional_moments: analysis.sentiment_analysis.emotional_moments || analysis.sentiment_analysis.emotional_analysis,
                         mood_changes: analysis.sentiment_analysis.mood_changes,
-                        energy_variations: analysis.sentiment_analysis.energy_level_variations || analysis.sentiment_analysis.energy_variations
+                        energy_variations: analysis.sentiment_analysis.energy_level_variations || analysis.sentiment_analysis.energy_variations,
+                        notes: analysis.sentiment_analysis.notes
                     });
                     console.log('Flattened sentiment analysis structure');
+                }
+                
+                // Handle emotional_analysis as an object with nested structures
+                if (analysis.emotional_analysis && typeof analysis.emotional_analysis === 'object') {
+                    if (analysis.emotional_analysis.emotional_moments) {
+                        analysis.emotional_moments = analysis.emotional_analysis.emotional_moments;
+                        console.log('Extracted emotional_moments from emotional_analysis');
+                    }
+                    if (analysis.emotional_analysis.mood_changes) {
+                        analysis.mood_changes = analysis.emotional_analysis.mood_changes;
+                        console.log('Extracted mood_changes from emotional_analysis');
+                    }
+                    if (analysis.emotional_analysis.energy_level_variations) {
+                        analysis.energy_variations = analysis.emotional_analysis.energy_level_variations;
+                        console.log('Extracted energy_level_variations from emotional_analysis');
+                    }
+                    if (analysis.emotional_analysis.overall_sentiment_score) {
+                        analysis.sentiment_scores = analysis.emotional_analysis.overall_sentiment_score;
+                        console.log('Extracted overall_sentiment_score from emotional_analysis');
+                    }
+                } else if (analysis.emotional_analysis && !analysis.emotional_moments) {
+                    // If emotional_analysis is an array, use it as emotional_moments
+                    analysis.emotional_moments = analysis.emotional_analysis;
+                    console.log('Using emotional_analysis as emotional_moments');
+                }
+                
+                // Handle sentiment_details structure (newest format)
+                if (analysis.sentiment_details) {
+                    if (analysis.sentiment_details.emotional_moments) {
+                        analysis.emotional_moments = analysis.sentiment_details.emotional_moments;
+                        console.log('Extracted emotional_moments from sentiment_details');
+                    }
+                    if (analysis.sentiment_details.mood_changes) {
+                        analysis.mood_changes = analysis.sentiment_details.mood_changes;
+                        console.log('Extracted mood_changes from sentiment_details');
+                    }
+                    if (analysis.sentiment_details.energy_level_variations) {
+                        analysis.energy_variations = analysis.sentiment_details.energy_level_variations;
+                        console.log('Extracted energy_level_variations from sentiment_details');
+                    }
+                }
+                
+                // Handle analysis_summary field
+                if (analysis.analysis_summary && !analysis.sentiment_summary) {
+                    analysis.sentiment_summary = analysis.analysis_summary;
+                    console.log('Using analysis_summary as sentiment_summary');
+                }
+                
+                // Handle overall_analysis structure
+                if (analysis.overall_analysis) {
+                    Object.assign(analysis, {
+                        overall_sentiment: analysis.overall_analysis.overall_sentiment,
+                        sentiment_summary: analysis.overall_analysis.summary
+                    });
+                    console.log('Extracted overall_analysis fields');
+                }
+                
+                // Handle timeline_analysis
+                if (analysis.timeline_analysis && !analysis.emotional_moments) {
+                    analysis.emotional_moments = analysis.timeline_analysis;
+                    console.log('Using timeline_analysis as emotional_moments');
+                }
+                
+                // Handle summary field at top level
+                if (analysis.summary && !analysis.sentiment_summary) {
+                    analysis.sentiment_summary = analysis.summary;
+                    console.log('Using summary as sentiment_summary');
                 }
                 
                 // Objects mode - flatten objects_analysis or scenes_analysis structure
@@ -2979,10 +3456,36 @@
                     console.log('Flattened scenes analysis structure');
                 }
                 
+                // Handle nested analysis.analysis structure for objects mode
+                if (analysis.analysis && typeof analysis.analysis === 'object') {
+                    // Check if it has objects mode fields
+                    if (analysis.analysis.overall_objects_identified || analysis.analysis.scene_changes) {
+                        Object.assign(analysis, {
+                            overall_objects: analysis.analysis.overall_objects_identified,
+                            overall_people: analysis.analysis.overall_people_identified,
+                            overall_scenes: analysis.analysis.overall_scenes_identified,
+                            scene_changes: analysis.analysis.scene_changes,
+                            scenes: analysis.analysis.scene_changes // Also map to scenes for compatibility
+                        });
+                        console.log('Extracted objects mode fields from nested analysis');
+                    }
+                }
+                
                 // Educational mode - flatten educational_content structure
                 if (analysis.educational_content) {
                     Object.assign(analysis, analysis.educational_content);
                     console.log('Flattened educational content structure');
+                }
+                
+                // Handle extracted_content structure (new educational format)
+                if (analysis.extracted_content) {
+                    Object.assign(analysis, {
+                        concepts: analysis.extracted_content.main_concepts_explained,
+                        takeaways: analysis.extracted_content.key_takeaways,
+                        examples: analysis.extracted_content.examples_or_demonstrations,
+                        action_items: analysis.extracted_content.action_items_or_recommendations
+                    });
+                    console.log('Extracted fields from extracted_content');
                 }
                 
                 // Key moments - flatten key_moments_analysis structure
@@ -3056,138 +3559,218 @@
                     container.appendChild(titleDiv);
                 }
                 
-                // Display educational content if available
-                if (analysis.learningObjectives) {
-                    const eduDiv = document.createElement('div');
-                    eduDiv.className = 'insight-item';
-                    eduDiv.innerHTML = `
-                        <h3 style="color: var(--primary); margin-bottom: 10px;">
-                            <i class="bi bi-mortarboard"></i> Learning Objectives
-                        </h3>
-                        <ul style="color: rgba(255, 255, 255, 0.85); line-height: 1.8;">
-                            ${analysis.learningObjectives.map(obj => `<li>${obj}</li>`).join('')}
-                        </ul>
-                    `;
-                    container.appendChild(eduDiv);
-                }
-                
-                // Display main concepts for educational mode
-                if (analysis.mainConcepts && analysis.mainConcepts.length > 0) {
-                    const conceptsDiv = document.createElement('div');
-                    conceptsDiv.className = 'insight-item';
+                // Display educational content (only in educational mode)
+                if (currentMode === 'educational' || !currentMode) {
+                    // Display title if available
+                    if (analysis.title) {
+                        const titleDiv = document.createElement('div');
+                        titleDiv.className = 'insight-item';
+                        titleDiv.innerHTML = `
+                            <h2 style="color: var(--primary); margin-bottom: 15px; text-align: center;">
+                                ${analysis.title}
+                            </h2>
+                        `;
+                        container.appendChild(titleDiv);
+                    }
                     
-                    // Check if mainConcepts is array of strings or objects
-                    const isStringArray = typeof analysis.mainConcepts[0] === 'string';
-                    
-                    if (isStringArray) {
-                        // Handle array of strings
-                        conceptsDiv.innerHTML = `
+                    // Display learning objectives if available (old format)
+                    if (analysis.learningObjectives) {
+                        const eduDiv = document.createElement('div');
+                        eduDiv.className = 'insight-item';
+                        eduDiv.innerHTML = `
                             <h3 style="color: var(--primary); margin-bottom: 10px;">
-                                <i class="bi bi-lightbulb"></i> Main Concepts
+                                <i class="bi bi-mortarboard"></i> Learning Objectives
                             </h3>
                             <ul style="color: rgba(255, 255, 255, 0.85); line-height: 1.8;">
-                                ${analysis.mainConcepts.map(concept => `<li>${concept}</li>`).join('')}
+                                ${analysis.learningObjectives.map(obj => `<li>${obj}</li>`).join('')}
                             </ul>
                         `;
-                        container.appendChild(conceptsDiv);
-                    } else {
-                        // Handle array of objects (original format)
-                        analysis.mainConcepts.forEach((concept, index) => {
-                            setTimeout(() => {
-                                const conceptDiv = document.createElement('div');
-                                conceptDiv.className = 'insight-item';
-                                conceptDiv.innerHTML = `
-                                    <h4 style="color: var(--primary); margin-bottom: 8px;">
-                                        <i class="bi bi-lightbulb"></i> ${concept.concept}
-                                    </h4>
-                                    <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 8px;">
-                                        ${concept.description}
-                                    </p>
-                                    ${concept.details ? `
-                                        <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9em;">
-                                            ${concept.details}
-                                        </p>
-                                    ` : ''}
-                                    ${concept.examples ? `
-                                        <div style="margin-top: 8px;">
-                                            ${concept.examples.map(ex => `
-                                                <div style="margin-left: 20px; color: rgba(255, 255, 255, 0.7); font-size: 0.9em;">
-                                                    • <strong>${ex.directive}:</strong> ${ex.description}
-                                                </div>
-                                            `).join('')}
-                                        </div>
-                                    ` : ''}
-                                `;
-                                container.appendChild(conceptDiv);
-                            }, index * 100);
-                        });
+                        container.appendChild(eduDiv);
                     }
                 }
                 
-                // Display examples with code blocks
-                if (analysis.examples && analysis.examples.length > 0) {
+                // Display main concepts for educational mode (new format)
+                if ((currentMode === 'educational' || !currentMode) && (analysis.concepts || analysis.mainConcepts)) {
+                    const concepts = analysis.concepts || analysis.mainConcepts;
+                    if (concepts && concepts.length > 0) {
+                        const conceptsDiv = document.createElement('div');
+                        conceptsDiv.className = 'insight-item';
+                        
+                        conceptsDiv.innerHTML = `
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">
+                                <i class="bi bi-lightbulb"></i> Main Concepts Explained
+                            </h3>
+                        `;
+                        
+                        const conceptsList = document.createElement('div');
+                        concepts.forEach((item, index) => {
+                            const conceptItem = document.createElement('div');
+                            conceptItem.style.cssText = `
+                                margin-bottom: 15px;
+                                padding: 12px;
+                                background: rgba(255, 255, 255, 0.05);
+                                border-radius: 8px;
+                                border-left: 3px solid var(--primary);
+                            `;
+                            
+                            if (typeof item === 'string') {
+                                // Simple string concept
+                                conceptItem.innerHTML = `
+                                    <div style="color: rgba(255, 255, 255, 0.85);">${item}</div>
+                                `;
+                            } else {
+                                // Object with concept and description
+                                conceptItem.innerHTML = `
+                                    <div style="color: rgba(255, 255, 255, 0.95); font-weight: 600; margin-bottom: 6px;">
+                                        ${item.concept || item.title || item.name || 'Concept'}
+                                    </div>
+                                    ${item.description ? `<div style="color: rgba(255, 255, 255, 0.75); line-height: 1.5;">${item.description}</div>` : ''}
+                                `;
+                            }
+                            
+                            conceptsList.appendChild(conceptItem);
+                        });
+                        
+                        conceptsDiv.appendChild(conceptsList);
+                        container.appendChild(conceptsDiv);
+                    }
+                }
+                
+                // Display examples (new educational format)
+                if ((currentMode === 'educational' || !currentMode) && analysis.examples && analysis.examples.length > 0) {
                     const examplesDiv = document.createElement('div');
                     examplesDiv.className = 'insight-item';
                     examplesDiv.innerHTML = `
                         <h3 style="color: var(--primary); margin-bottom: 15px;">
-                            <i class="bi bi-code-slash"></i> Code Examples
+                            <i class="bi bi-diagram-3"></i> Examples & Demonstrations
                         </h3>
                     `;
                     
+                    const examplesList = document.createElement('div');
                     analysis.examples.forEach((example, index) => {
                         const exampleItem = document.createElement('div');
-                        exampleItem.style.marginBottom = '20px';
-                        
-                        // Handle code as array or string
-                        const codeContent = Array.isArray(example.code) 
-                            ? example.code.join('\\n') 
-                            : example.code;
+                        exampleItem.style.cssText = `
+                            margin-bottom: 15px;
+                            padding: 12px;
+                            background: rgba(255, 255, 255, 0.05);
+                            border-radius: 8px;
+                            border-left: 3px solid #9c27b0;
+                        `;
                         
                         exampleItem.innerHTML = `
-                            <div style="margin-bottom: 8px;">
-                                <p style="color: rgba(255, 255, 255, 0.85); font-size: 0.9em; margin-bottom: 8px;">
-                                    ${example.description}
-                                </p>
-                                <pre style="background: rgba(0, 0, 0, 0.4); padding: 12px; border-radius: 8px; 
-                                           border: 1px solid rgba(255, 255, 255, 0.1); overflow-x: auto;">
-                                    <code style="color: #f0f0f0; font-family: 'Fira Code', 'Monaco', monospace; font-size: 0.85em;">${escapeHtml(codeContent)}</code>
-                                </pre>
+                            <div style="color: rgba(255, 255, 255, 0.95); font-weight: 600; margin-bottom: 6px;">
+                                ${example.type || 'Example'}
                             </div>
+                            ${example.items && example.items.length > 0 ? `
+                                <div style="color: rgba(255, 255, 255, 0.8); margin-bottom: 6px;">
+                                    ${example.items.map(item => `<span style="background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px; margin-right: 8px;">${item}</span>`).join('')}
+                                </div>
+                            ` : ''}
+                            ${example.context ? `<div style="color: rgba(255, 255, 255, 0.7); line-height: 1.5; font-style: italic;">${example.context}</div>` : ''}
+                            ${example.description ? `<div style="color: rgba(255, 255, 255, 0.75); line-height: 1.5;">${example.description}</div>` : ''}
                         `;
-                        examplesDiv.appendChild(exampleItem);
+                        
+                        examplesList.appendChild(exampleItem);
                     });
                     
+                    examplesDiv.appendChild(examplesList);
                     container.appendChild(examplesDiv);
                 }
                 
-                // Display key takeaways
-                if (analysis.keyTakeaways && analysis.keyTakeaways.length > 0) {
-                    const takeawaysDiv = document.createElement('div');
-                    takeawaysDiv.className = 'insight-item';
-                    takeawaysDiv.innerHTML = `
-                        <h3 style="color: var(--primary); margin-bottom: 10px;">
-                            <i class="bi bi-check-circle"></i> Key Takeaways
-                        </h3>
-                        <ul style="color: rgba(255, 255, 255, 0.85); line-height: 1.8;">
-                            ${analysis.keyTakeaways.map(takeaway => `<li>${takeaway}</li>`).join('')}
-                        </ul>
-                    `;
-                    container.appendChild(takeawaysDiv);
+                // Display key takeaways (new format)
+                if ((currentMode === 'educational' || !currentMode) && (analysis.takeaways || analysis.keyTakeaways)) {
+                    const takeaways = analysis.takeaways || analysis.keyTakeaways;
+                    if (takeaways && takeaways.length > 0) {
+                        const takeawaysDiv = document.createElement('div');
+                        takeawaysDiv.className = 'insight-item';
+                        takeawaysDiv.innerHTML = `
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">
+                                <i class="bi bi-check-circle"></i> Key Takeaways
+                            </h3>
+                        `;
+                        
+                        const takeawaysList = document.createElement('div');
+                        takeaways.forEach((item) => {
+                            const takeawayItem = document.createElement('div');
+                            takeawayItem.style.cssText = `
+                                margin-bottom: 12px;
+                                padding: 10px;
+                                background: rgba(255, 255, 255, 0.05);
+                                border-radius: 8px;
+                                border-left: 3px solid #4caf50;
+                            `;
+                            
+                            if (typeof item === 'string') {
+                                takeawayItem.innerHTML = `
+                                    <div style="color: rgba(255, 255, 255, 0.85);">
+                                        <i class="bi bi-check" style="color: #4caf50; margin-right: 8px;"></i>
+                                        ${item}
+                                    </div>
+                                `;
+                            } else {
+                                takeawayItem.innerHTML = `
+                                    <div style="color: rgba(255, 255, 255, 0.9); margin-bottom: 4px;">
+                                        <i class="bi bi-check" style="color: #4caf50; margin-right: 8px;"></i>
+                                        <strong>${item.takeaway || item.title || 'Takeaway'}</strong>
+                                    </div>
+                                    ${item.details ? `<div style="color: rgba(255, 255, 255, 0.75); margin-left: 24px; line-height: 1.5;">${item.details}</div>` : ''}
+                                `;
+                            }
+                            
+                            takeawaysList.appendChild(takeawayItem);
+                        });
+                        
+                        takeawaysDiv.appendChild(takeawaysList);
+                        container.appendChild(takeawaysDiv);
+                    }
                 }
                 
-                // Display action items
-                if (analysis.actionItems && analysis.actionItems.length > 0) {
-                    const actionsDiv = document.createElement('div');
-                    actionsDiv.className = 'insight-item';
-                    actionsDiv.innerHTML = `
-                        <h3 style="color: var(--primary); margin-bottom: 10px;">
-                            <i class="bi bi-list-task"></i> Action Items
-                        </h3>
-                        <ul style="color: rgba(255, 255, 255, 0.85); line-height: 1.8;">
-                            ${analysis.actionItems.map(item => `<li>${item}</li>`).join('')}
-                        </ul>
-                    `;
-                    container.appendChild(actionsDiv);
+                // Display action items (new format)
+                if ((currentMode === 'educational' || !currentMode) && (analysis.action_items || analysis.actionItems)) {
+                    const actionItems = analysis.action_items || analysis.actionItems;
+                    if (actionItems && actionItems.length > 0) {
+                        const actionsDiv = document.createElement('div');
+                        actionsDiv.className = 'insight-item';
+                        actionsDiv.innerHTML = `
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">
+                                <i class="bi bi-list-task"></i> Action Items & Recommendations
+                            </h3>
+                        `;
+                        
+                        const actionsList = document.createElement('div');
+                        actionItems.forEach((item) => {
+                            const actionItem = document.createElement('div');
+                            actionItem.style.cssText = `
+                                margin-bottom: 12px;
+                                padding: 10px;
+                                background: rgba(255, 255, 255, 0.05);
+                                border-radius: 8px;
+                                border-left: 3px solid #ff9800;
+                            `;
+                            
+                            if (typeof item === 'string') {
+                                actionItem.innerHTML = `
+                                    <div style="color: rgba(255, 255, 255, 0.85);">
+                                        <i class="bi bi-arrow-right" style="color: #ff9800; margin-right: 8px;"></i>
+                                        ${item}
+                                    </div>
+                                `;
+                            } else {
+                                actionItem.innerHTML = `
+                                    <div style="color: rgba(255, 255, 255, 0.9); margin-bottom: 4px;">
+                                        <i class="bi bi-arrow-right" style="color: #ff9800; margin-right: 8px;"></i>
+                                        <strong>${item.action || item.title || 'Action'}</strong>
+                                    </div>
+                                    ${item.details ? `<div style="color: rgba(255, 255, 255, 0.75); margin-left: 24px; line-height: 1.5;">${item.details}</div>` : ''}
+                                `;
+                            }
+                            
+                            actionsList.appendChild(actionItem);
+                        });
+                        
+                        actionsDiv.appendChild(actionsList);
+                        container.appendChild(actionsDiv);
+                    }
                 }
                 
                 // Display additional resources
@@ -3219,8 +3802,9 @@
                     container.appendChild(resourcesDiv);
                 }
                 
-                // Display sentiment analysis
-                if (analysis.overall_sentiment || analysis.emotional_moments || analysis.mood_changes || analysis.energy_variations) {
+                // Display sentiment analysis (only in sentiment mode)
+                if ((currentMode === 'sentiment' || !currentMode) && 
+                    (analysis.overall_sentiment || analysis.emotional_moments || analysis.mood_changes || analysis.timeline_analysis)) {
                     const sentimentDiv = document.createElement('div');
                     sentimentDiv.className = 'insight-item';
                     sentimentDiv.innerHTML = `
@@ -3236,6 +3820,70 @@
                         sentimentDiv.appendChild(overallDiv);
                     }
                     
+                    if (analysis.sentiment_summary) {
+                        const summaryDiv = document.createElement('p');
+                        summaryDiv.style.cssText = 'color: rgba(255, 255, 255, 0.85); margin-bottom: 15px; line-height: 1.6;';
+                        summaryDiv.innerHTML = `${analysis.sentiment_summary}`;
+                        sentimentDiv.appendChild(summaryDiv);
+                    }
+                    
+                    // Display sentiment scores if available
+                    if (analysis.sentiment_scores) {
+                        const scoresDiv = document.createElement('div');
+                        scoresDiv.style.cssText = 'margin-bottom: 15px; padding: 10px; background: rgba(255, 255, 255, 0.05); border-radius: 8px;';
+                        
+                        let scoresHtml = '<div style="font-weight: 600; margin-bottom: 8px; color: rgba(255, 255, 255, 0.9);">Sentiment Scores:</div>';
+                        
+                        if (analysis.sentiment_scores.positive !== undefined) {
+                            const posPercent = Math.round(analysis.sentiment_scores.positive * 100);
+                            scoresHtml += `
+                                <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                                    <span style="width: 80px; color: #4caf50;">Positive:</span>
+                                    <div style="flex: 1; height: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; margin: 0 10px;">
+                                        <div style="width: ${posPercent}%; height: 100%; background: #4caf50; border-radius: 10px;"></div>
+                                    </div>
+                                    <span style="color: rgba(255, 255, 255, 0.8);">${posPercent}%</span>
+                                </div>
+                            `;
+                        }
+                        
+                        if (analysis.sentiment_scores.negative !== undefined) {
+                            const negPercent = Math.round(analysis.sentiment_scores.negative * 100);
+                            scoresHtml += `
+                                <div style="display: flex; align-items: center; margin-bottom: 4px;">
+                                    <span style="width: 80px; color: #f44336;">Negative:</span>
+                                    <div style="flex: 1; height: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; margin: 0 10px;">
+                                        <div style="width: ${negPercent}%; height: 100%; background: #f44336; border-radius: 10px;"></div>
+                                    </div>
+                                    <span style="color: rgba(255, 255, 255, 0.8);">${negPercent}%</span>
+                                </div>
+                            `;
+                        }
+                        
+                        if (analysis.sentiment_scores.neutral !== undefined) {
+                            const neuPercent = Math.round(analysis.sentiment_scores.neutral * 100);
+                            scoresHtml += `
+                                <div style="display: flex; align-items: center;">
+                                    <span style="width: 80px; color: #9e9e9e;">Neutral:</span>
+                                    <div style="flex: 1; height: 20px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; margin: 0 10px;">
+                                        <div style="width: ${neuPercent}%; height: 100%; background: #9e9e9e; border-radius: 10px;"></div>
+                                    </div>
+                                    <span style="color: rgba(255, 255, 255, 0.8);">${neuPercent}%</span>
+                                </div>
+                            `;
+                        }
+                        
+                        scoresDiv.innerHTML = scoresHtml;
+                        sentimentDiv.appendChild(scoresDiv);
+                    }
+                    
+                    if (analysis.notes) {
+                        const notesDiv = document.createElement('p');
+                        notesDiv.style.cssText = 'color: rgba(255, 255, 255, 0.8); margin-bottom: 15px; font-style: italic;';
+                        notesDiv.innerHTML = `${analysis.notes}`;
+                        sentimentDiv.appendChild(notesDiv);
+                    }
+                    
                     // Display emotional moments with clickable timestamps
                     if (analysis.emotional_moments && analysis.emotional_moments.length > 0) {
                         const momentsContainer = document.createElement('div');
@@ -3248,35 +3896,72 @@
                         
                         analysis.emotional_moments.forEach((moment, index) => {
                             const timeStr = moment.timestamp || moment.time || '00:00';
-                            const emotion = moment.emotion || 'Unknown';
-                            const description = moment.description || '';
+                            const emotion = moment.emotion || moment.sentiment || 'Unknown';
+                            const mood = moment.mood || '';
+                            const energyLevel = moment.energy_level || '';
+                            const emotionalTone = moment.emotional_tone || '';
+                            const speaker = moment.speaker || '';
+                            const phrase = moment.phrase || '';
+                            const textContent = moment.text_content || '';
+                            const description = moment.description || moment.emotional_moment_description || moment.notes || '';
+                            const textExcerpt = phrase || moment.text_excerpt || textContent || '';
                             
                             // Create moment item div
                             const momentItem = document.createElement('div');
                             momentItem.className = 'emotion-item';
                             momentItem.style.cssText = `
-                                margin-bottom: 8px; 
-                                padding: 10px; 
+                                margin-bottom: 12px; 
+                                padding: 12px; 
                                 background: rgba(255, 255, 255, 0.05); 
                                 border-radius: 8px; 
                                 border-left: 3px solid var(--primary); 
                                 cursor: pointer;
-                                display: flex;
-                                align-items: center;
                             `;
                             
-                            // No hover effect on container - only on timestamp badge
+                            let momentContent = `
+                                <div style="display: flex; align-items: flex-start;">
+                                    <span class="timecode-badge clickable" 
+                                          style="cursor: pointer; margin-right: 12px; background: var(--primary); padding: 6px 10px; border-radius: 4px; font-size: 0.85em; color: white; font-weight: 600; white-space: nowrap; min-width: fit-content;">
+                                        ${timeStr}
+                                    </span>
+                                    <div style="flex: 1;">
+                            `;
                             
-                            momentItem.innerHTML = `
-                                <span class="timecode-badge clickable" 
-                                      style="cursor: pointer; margin-right: 10px; background: var(--primary); padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: white; font-weight: 600;">
-                                    ${timeStr}
-                                </span>
-                                <div style="flex: 1;">
-                                    <div style="color: rgba(255, 255, 255, 0.85); font-weight: 600;">${emotion}</div>
-                                    ${description ? `<div style="color: rgba(255, 255, 255, 0.6); font-size: 0.9em; margin-top: 4px;">${description}</div>` : ''}
+                            // Main emotion/mood line
+                            if (emotion || mood || emotionalTone) {
+                                momentContent += `
+                                    <div style="color: rgba(255, 255, 255, 0.9); font-weight: 600; margin-bottom: 6px;">
+                                        ${emotion}${mood && mood !== emotion ? ` - ${mood}` : ''}${emotionalTone && emotionalTone !== mood && emotionalTone !== emotion ? ` (${emotionalTone})` : ''}
+                                    </div>
+                                `;
+                            }
+                            
+                            // Speaker if available
+                            if (speaker && speaker !== 'N/A') {
+                                momentContent += `<div style="color: var(--primary); font-size: 0.85em; margin-bottom: 4px; font-weight: 500;">${speaker}</div>`;
+                            }
+                            
+                            // Energy level
+                            if (energyLevel) {
+                                momentContent += `<div style="color: rgba(255, 255, 255, 0.7); font-size: 0.85em; margin-bottom: 4px;"><i class="bi bi-activity"></i> Energy: ${energyLevel}</div>`;
+                            }
+                            
+                            // Text excerpt/content
+                            if (textExcerpt) {
+                                momentContent += `<div style="color: rgba(255, 255, 255, 0.65); font-size: 0.9em; margin-top: 6px; font-style: italic; padding-left: 10px; border-left: 2px solid rgba(255, 255, 255, 0.2);">"${textExcerpt}"</div>`;
+                            }
+                            
+                            // Description
+                            if (description) {
+                                momentContent += `<div style="color: rgba(255, 255, 255, 0.75); font-size: 0.9em; margin-top: 6px; line-height: 1.5;">${description}</div>`;
+                            }
+                            
+                            momentContent += `
+                                    </div>
                                 </div>
                             `;
+                            
+                            momentItem.innerHTML = momentContent;
                             
                             // Add click handler to entire moment item
                             momentItem.onclick = (e) => {
@@ -3306,44 +3991,63 @@
                         moodContainer.appendChild(moodTitle);
                         
                         analysis.mood_changes.forEach((change, index) => {
-                            const timeStr = change.timestamp || change.time || '00:00';
-                            const mood = change.mood_change || change.mood || change.description || 'Unknown mood';
+                            // Handle new format with just description and progression
+                            const hasTimestamp = change.timestamp || change.time;
+                            const timeStr = change.timestamp || change.time || '';
+                            const mood = change.mood || change.mood_change || '';
                             const description = change.description || '';
+                            const progression = change.progression || '';
                             
                             const changeItem = document.createElement('div');
                             changeItem.className = 'mood-change-item';
                             changeItem.style.cssText = `
-                                margin-bottom: 8px; 
-                                padding: 10px; 
+                                margin-bottom: 12px; 
+                                padding: 12px; 
                                 background: rgba(255, 255, 255, 0.05); 
                                 border-radius: 8px; 
-                                border-left: 3px solid #9c27b0; 
-                                cursor: pointer;
-                                display: flex;
-                                align-items: center;
+                                border-left: 3px solid #9c27b0;
                             `;
                             
-                            // No hover effect on container - only on timestamp badge
+                            let content = '<div>';
                             
-                            changeItem.innerHTML = `
-                                <span class="timecode-badge clickable" 
-                                      style="cursor: pointer; margin-right: 10px; background: #9c27b0; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: white; font-weight: 600;">
-                                    ${timeStr}
-                                </span>
-                                <div style="flex: 1;">
-                                    <div style="color: rgba(255, 255, 255, 0.85);">
-                                        <i class="bi bi-arrow-right" style="margin: 0 5px;"></i> ${mood}
+                            if (hasTimestamp) {
+                                // Old format with timestamps
+                                content = `
+                                    <div style="display: flex; align-items: flex-start;">
+                                        <span class="timecode-badge clickable" 
+                                              style="cursor: pointer; margin-right: 12px; background: #9c27b0; padding: 6px 10px; border-radius: 4px; font-size: 0.85em; color: white; font-weight: 600; min-width: fit-content;">
+                                            ${timeStr}
+                                        </span>
+                                        <div style="flex: 1;">
+                                            <div style="color: rgba(255, 255, 255, 0.9); font-weight: 500; margin-bottom: 4px;">
+                                                ${mood}
+                                            </div>
+                                            ${description && description !== mood ? `<div style="color: rgba(255, 255, 255, 0.7); font-size: 0.9em; line-height: 1.5;">${description}</div>` : ''}
+                                        </div>
                                     </div>
-                                    ${description ? `<div style="color: rgba(255, 255, 255, 0.6); font-size: 0.9em; margin-top: 4px; margin-left: 20px;">${description}</div>` : ''}
-                                </div>
-                            `;
+                                `;
+                                changeItem.style.cursor = 'pointer';
+                                changeItem.onclick = (e) => {
+                                    e.stopPropagation();
+                                    console.log('Clicked mood change with time:', timeStr);
+                                    seekToTime(timeStr);
+                                };
+                            } else {
+                                // New format with description and progression
+                                content = `
+                                    <div>
+                                        ${description ? `<div style="color: rgba(255, 255, 255, 0.85); margin-bottom: 8px; line-height: 1.5;">${description}</div>` : ''}
+                                        ${progression ? `
+                                            <div style="margin-top: 8px; padding: 8px; background: rgba(0, 0, 0, 0.3); border-radius: 6px;">
+                                                <div style="color: rgba(255, 255, 255, 0.7); font-size: 0.85em; margin-bottom: 4px; font-weight: 600;">Progression:</div>
+                                                <div style="color: rgba(255, 255, 255, 0.8); font-size: 0.9em; font-family: 'Monaco', monospace;">${progression}</div>
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                `;
+                            }
                             
-                            changeItem.onclick = (e) => {
-                                e.stopPropagation();
-                                console.log('Clicked mood change with time:', timeStr);
-                                seekToTime(timeStr);
-                            };
-                            changeItem.title = 'Click to jump to ' + timeStr;
+                            changeItem.innerHTML = content;
                             
                             setTimeout(() => {
                                 moodContainer.appendChild(changeItem);
@@ -3353,69 +4057,12 @@
                         sentimentDiv.appendChild(moodContainer);
                     }
                     
-                    // Display energy level variations with clickable timestamps
-                    if (analysis.energy_variations && analysis.energy_variations.length > 0) {
-                        const energyContainer = document.createElement('div');
-                        energyContainer.style.marginTop = '15px';
-                        
-                        const energyTitle = document.createElement('h4');
-                        energyTitle.style.cssText = 'color: rgba(255, 255, 255, 0.7); font-size: 0.9em; margin-bottom: 10px;';
-                        energyTitle.textContent = 'Energy Level Variations:';
-                        energyContainer.appendChild(energyTitle);
-                        
-                        analysis.energy_variations.forEach((variation, index) => {
-                            const timeStr = variation.timestamp || variation.time || '00:00';
-                            const level = variation.energy_level || variation.level || variation.energy || 'Unknown';
-                            const description = variation.description || '';
-                            
-                            const energyItem = document.createElement('div');
-                            energyItem.className = 'energy-variation-item';
-                            energyItem.style.cssText = `
-                                margin-bottom: 8px; 
-                                padding: 10px; 
-                                background: rgba(255, 255, 255, 0.05); 
-                                border-radius: 8px; 
-                                border-left: 3px solid #ff9800; 
-                                cursor: pointer;
-                                display: flex;
-                                align-items: center;
-                            `;
-                            
-                            // No hover effect on container - only on timestamp badge
-                            
-                            energyItem.innerHTML = `
-                                <span class="timecode-badge clickable" 
-                                      style="cursor: pointer; margin-right: 10px; background: #ff9800; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: white; font-weight: 600;">
-                                    ${timeStr}
-                                </span>
-                                <div style="flex: 1;">
-                                    <div style="color: rgba(255, 255, 255, 0.85);">
-                                        <i class="bi bi-activity" style="margin-right: 5px;"></i> Energy: ${level}
-                                    </div>
-                                    ${description ? `<div style="color: rgba(255, 255, 255, 0.6); font-size: 0.9em; margin-top: 4px;">${description}</div>` : ''}
-                                </div>
-                            `;
-                            
-                            energyItem.onclick = (e) => {
-                                e.stopPropagation();
-                                console.log('Clicked energy variation with time:', timeStr);
-                                seekToTime(timeStr);
-                            };
-                            energyItem.title = 'Click to jump to ' + timeStr;
-                            
-                            setTimeout(() => {
-                                energyContainer.appendChild(energyItem);
-                            }, index * 50);
-                        });
-                        
-                        sentimentDiv.appendChild(energyContainer);
-                    }
-                    
                     container.appendChild(sentimentDiv);
                 }
                 
-                // Display detected objects
-                if (analysis.objects || analysis.scenes) {
+                // Display detected objects (only in objects mode)
+                if ((currentMode === 'objects' || !currentMode) && 
+                    (analysis.objects || analysis.scenes || analysis.overall_objects || analysis.scene_changes)) {
                     const objectsDiv = document.createElement('div');
                     objectsDiv.className = 'insight-item';
                     objectsDiv.innerHTML = `
@@ -3424,21 +4071,85 @@
                         </h3>
                     `;
                     
+                    // Display overall summary if available
+                    if (analysis.overall_objects || analysis.overall_people || analysis.overall_scenes) {
+                        const summaryDiv = document.createElement('div');
+                        summaryDiv.style.cssText = 'margin-bottom: 20px; padding: 12px; background: rgba(255, 255, 255, 0.05); border-radius: 8px;';
+                        
+                        let summaryHtml = '';
+                        
+                        if (analysis.overall_objects && analysis.overall_objects.length > 0) {
+                            summaryHtml += `
+                                <div style="margin-bottom: 12px;">
+                                    <h4 style="color: var(--primary); font-size: 0.9em; margin-bottom: 8px;">
+                                        <i class="bi bi-box"></i> Objects Identified
+                                    </h4>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                        ${analysis.overall_objects.map(obj => 
+                                            `<span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 4px; font-size: 0.85em; color: rgba(255,255,255,0.85);">${obj}</span>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        if (analysis.overall_people && analysis.overall_people.length > 0) {
+                            summaryHtml += `
+                                <div style="margin-bottom: 12px;">
+                                    <h4 style="color: var(--primary); font-size: 0.9em; margin-bottom: 8px;">
+                                        <i class="bi bi-people"></i> People Identified
+                                    </h4>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                        ${analysis.overall_people.map(person => 
+                                            `<span style="background: rgba(76,175,80,0.2); padding: 4px 10px; border-radius: 4px; font-size: 0.85em; color: rgba(255,255,255,0.85);">${person}</span>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        if (analysis.overall_scenes && analysis.overall_scenes.length > 0) {
+                            summaryHtml += `
+                                <div>
+                                    <h4 style="color: var(--primary); font-size: 0.9em; margin-bottom: 8px;">
+                                        <i class="bi bi-camera-reels"></i> Scenes Identified
+                                    </h4>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                        ${analysis.overall_scenes.map(scene => 
+                                            `<span style="background: rgba(156,39,176,0.2); padding: 4px 10px; border-radius: 4px; font-size: 0.85em; color: rgba(255,255,255,0.85);">${scene}</span>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                        
+                        if (summaryHtml) {
+                            summaryDiv.innerHTML = summaryHtml;
+                            objectsDiv.appendChild(summaryDiv);
+                        }
+                    }
+                    
                     if (analysis.scenes && analysis.scenes.length > 0) {
+                        // Add scene changes title
+                        const scenesTitle = document.createElement('h4');
+                        scenesTitle.style.cssText = 'color: rgba(255, 255, 255, 0.8); font-size: 0.95em; margin-top: 20px; margin-bottom: 12px; font-weight: 600;';
+                        scenesTitle.innerHTML = '<i class="bi bi-film"></i> Scene Changes';
+                        objectsDiv.appendChild(scenesTitle);
+                        
                         const scenesContainer = document.createElement('div');
                         scenesContainer.style.marginTop = '10px';
                         
                         analysis.scenes.forEach((scene, index) => {
                             setTimeout(() => {
                                 const timeStr = scene.timestamp || scene.time || '00:00';
-                                const location = scene.location || scene.setting || 'Scene';
+                                const location = scene.scene_setting_location || scene.location || scene.setting || 'Scene';
                                 
                                 // Create scene item div
                                 const sceneItem = document.createElement('div');
                                 sceneItem.className = 'scene-item';
                                 sceneItem.style.cssText = `
-                                    margin-bottom: 12px; 
-                                    padding: 12px; 
+                                    margin-bottom: 15px; 
+                                    padding: 14px; 
                                     background: rgba(255, 255, 255, 0.05); 
                                     border-radius: 8px; 
                                     border-left: 3px solid var(--primary); 
@@ -3447,30 +4158,47 @@
                                 
                                 // Build HTML content
                                 let sceneHtml = `
-                                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                    <div style="display: flex; align-items: flex-start; margin-bottom: 10px;">
                                         <span class="timecode-badge clickable" 
                                               onclick="seekToTime('${timeStr.replace(/'/g, "\\'")}')"
-                                              style="cursor: pointer; margin-right: 10px; background: var(--primary); padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: white; font-weight: 600;">
+                                              style="cursor: pointer; margin-right: 12px; background: var(--primary); padding: 6px 10px; border-radius: 4px; font-size: 0.85em; color: white; font-weight: 600; min-width: fit-content;">
                                             ${timeStr}
                                         </span>
-                                        <strong style="color: rgba(255, 255, 255, 0.9);">${location}</strong>
+                                        <div style="flex: 1;">
+                                            <strong style="color: rgba(255, 255, 255, 0.95); font-size: 1.05em;">${location}</strong>
+                                        </div>
                                     </div>
                                 `;
                                 
-                                if (scene.objects && scene.objects.length > 0) {
+                                // Handle objects_visible (new format) or objects (old format)
+                                const objects = scene.objects_visible || scene.objects;
+                                if (objects && objects.length > 0) {
                                     sceneHtml += `
-                                        <div style="margin-left: 20px; color: rgba(255, 255, 255, 0.7); font-size: 0.9em;">
-                                            <i class="bi bi-box" style="margin-right: 5px;"></i>
-                                            Objects: ${Array.isArray(scene.objects) ? scene.objects.join(', ') : scene.objects}
+                                        <div style="margin-left: 12px; margin-bottom: 8px;">
+                                            <div style="color: var(--primary); font-size: 0.85em; margin-bottom: 6px; font-weight: 600;">
+                                                <i class="bi bi-box"></i> Objects Visible
+                                            </div>
+                                            <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                                ${objects.map(obj => 
+                                                    `<span style="background: rgba(255,255,255,0.08); padding: 3px 8px; border-radius: 4px; font-size: 0.82em; color: rgba(255,255,255,0.8);">${obj}</span>`
+                                                ).join('')}
+                                            </div>
                                         </div>
                                     `;
                                 }
                                 
-                                if (scene.people) {
+                                // Handle people information (new format)
+                                if (scene.people_count !== undefined || scene.people_description || scene.people) {
+                                    const peopleCount = scene.people_count;
+                                    const peopleDesc = scene.people_description || scene.people || '';
+                                    
                                     sceneHtml += `
-                                        <div style="margin-left: 20px; color: rgba(255, 255, 255, 0.7); font-size: 0.9em;">
-                                            <i class="bi bi-people" style="margin-right: 5px;"></i>
-                                            People: ${scene.people}
+                                        <div style="margin-left: 12px; margin-bottom: 8px;">
+                                            <div style="color: #4caf50; font-size: 0.85em; margin-bottom: 4px; font-weight: 600;">
+                                                <i class="bi bi-people"></i> People ${peopleCount !== undefined ? `(${peopleCount})` : ''}
+                                            </div>
+                                            <div style="color: rgba(255, 255, 255, 0.75); font-size: 0.88em; line-height: 1.4;">
+                                                ${peopleDesc}
                                         </div>
                                     `;
                                 }
@@ -3512,20 +4240,32 @@
                     container.appendChild(objectsDiv);
                 }
                 
-                // Display transcript sections with clickable timestamps like key moments
-                if (analysis.transcript && Array.isArray(analysis.transcript)) {
-                    // Add transcript header
-                    const headerDiv = document.createElement('div');
-                    headerDiv.className = 'insight-item';
-                    headerDiv.innerHTML = `
-                        <h3 style="color: var(--primary); margin-bottom: 15px;">
-                            <i class="bi bi-chat-text"></i> Transcript
-                        </h3>
-                    `;
-                    container.appendChild(headerDiv);
-                    
-                    // Display each transcript entry as a separate clickable item
-                    analysis.transcript.forEach((section, index) => {
+                // Display transcript - handle both string and array formats
+                if (analysis.transcript) {
+                    if (typeof analysis.transcript === 'string') {
+                        // Display as formatted text transcript
+                        const transcriptDiv = document.createElement('div');
+                        transcriptDiv.className = 'insight-item';
+                        transcriptDiv.innerHTML = `
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">
+                                <i class="bi bi-chat-text"></i> Transcript
+                            </h3>
+                            <pre style="white-space: pre-wrap; color: rgba(255, 255, 255, 0.85); font-family: inherit; font-size: 0.95em; line-height: 1.6;">${escapeHtml(analysis.transcript)}</pre>
+                        `;
+                        container.appendChild(transcriptDiv);
+                    } else if (Array.isArray(analysis.transcript)) {
+                        // Add transcript header
+                        const headerDiv = document.createElement('div');
+                        headerDiv.className = 'insight-item';
+                        headerDiv.innerHTML = `
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">
+                                <i class="bi bi-chat-text"></i> Transcript
+                            </h3>
+                        `;
+                        container.appendChild(headerDiv);
+                        
+                        // Display each transcript entry as a separate clickable item
+                        analysis.transcript.forEach((section, index) => {
                         setTimeout(() => {
                             const transcriptItem = document.createElement('div');
                             transcriptItem.className = 'insight-item timecode';
@@ -3537,12 +4277,14 @@
                             const text = section.text || section.content || '';
                             
                             transcriptItem.innerHTML = `
-                                <span class="timecode-badge">${timestamp}</span>
-                                <div style="flex: 1;">
-                                    ${speaker ? `<strong style="color: var(--primary); font-size: 0.9em;">${speaker}:</strong>` : ''}
-                                    <p style="line-height: 1.6; color: rgba(255, 255, 255, 0.85); margin-top: 4px;">
-                                        ${text}
-                                    </p>
+                                <div style="display: flex; align-items: flex-start; gap: 16px;">
+                                    <span class="timecode-badge" style="flex-shrink: 0; min-width: 60px; text-align: center;">${timestamp}</span>
+                                    <div style="flex: 1;">
+                                        ${speaker ? `<strong style="color: var(--primary); font-size: 0.9em;">${speaker}:</strong>` : ''}
+                                        <p style="line-height: 1.6; color: rgba(255, 255, 255, 0.85); margin-top: 4px; margin-bottom: 0;">
+                                            ${text}
+                                        </p>
+                                    </div>
                                 </div>
                             `;
                             
@@ -3556,46 +4298,67 @@
                             container.appendChild(transcriptItem);
                         }, index * 50); // Stagger the appearance
                     });
+                    }
                 }
                 
-                // Display moments with clickable timestamps
-                if (analysis.moments && analysis.moments.length > 0) {
+                // Display moments with clickable timestamps (only in key_moments mode)
+                const momentsArray = analysis.moments || analysis.key_moments;
+                if ((currentMode === 'key_moments' || !currentMode) && momentsArray && momentsArray.length > 0) {
+                    // Add header
+                    const headerDiv = document.createElement('div');
+                    headerDiv.className = 'insight-item';
+                    headerDiv.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">
+                            <i class="bi bi-bookmark-star"></i> Key Moments
+                        </h3>
+                    `;
+                    container.appendChild(headerDiv);
+                    
                     // Store markers for timeline
-                    videoMarkers = analysis.moments.map(moment => {
+                    videoMarkers = momentsArray.map(moment => {
                         const timestamp = moment.timestamp || moment.time;
                         const startTime = timestamp ? timestamp.split('-')[0] : null;
                         return {
                             time: startTime,
                             description: moment.description || moment.text || '',
-                            timestamp: timestamp
+                            timestamp: timestamp,
+                            importance: moment.importance || moment.why_important || moment.why_it_important
                         };
                     }).filter(m => m.time);
                     
-                    // Update timeline and chapters
-                    setupVideoTimeline();
-                    updateChaptersList();
+                    // Update timeline
+                    if (typeof setupVideoTimeline === 'function') setupVideoTimeline();
                     
-                    analysis.moments.forEach((moment, index) => {
+                    momentsArray.forEach((moment, index) => {
                         setTimeout(() => {
                             const div = document.createElement('div');
                             div.className = 'insight-item timecode';
                             div.style.cursor = 'pointer';
                             
-                            // Parse timestamp (format: "0:00-0:06" or "0:00")
+                            // Parse timestamp (format: "0:00-0:06" or "0:00" or "00:00")
                             const timestamp = moment.timestamp || moment.time;
                             const startTime = timestamp ? timestamp.split('-')[0] : null;
+                            // Handle different spellings of importance field
+                            const importance = moment.importance || moment.why_important || moment.why_it_important || '';
                             
                             div.innerHTML = `
-                                <span class="timecode-badge">${startTime || 'N/A'}</span>
-                                <div style="flex: 1;">
-                                    <p style="line-height: 1.6; color: rgba(255, 255, 255, 0.85);">
-                                        ${moment.description || moment.text || ''}
-                                    </p>
-                                    ${timestamp && timestamp.includes('-') ? 
-                                        `<p style="color: rgba(255, 255, 255, 0.7); font-size: 0.85em; margin-top: 4px;">
-                                            <i class="bi bi-clock"></i> Duration: ${timestamp}
-                                        </p>` : ''
-                                    }
+                                <div style="display: flex; align-items: flex-start; gap: 16px;">
+                                    <span class="timecode-badge" style="flex-shrink: 0; min-width: 60px; text-align: center;">${startTime || 'N/A'}</span>
+                                    <div style="flex: 1;">
+                                        <p style="line-height: 1.6; color: rgba(255, 255, 255, 0.85); font-weight: ${importance ? '500' : 'normal'}; margin: 0;">
+                                            ${moment.description || moment.text || ''}
+                                        </p>
+                                        ${importance ? 
+                                            `<p style="color: var(--primary); font-size: 0.85em; margin-top: 8px; font-style: italic; margin-bottom: 0;">
+                                                <i class="bi bi-lightbulb"></i> ${importance}
+                                            </p>` : ''
+                                        }
+                                        ${timestamp && timestamp.includes('-') ? 
+                                            `<p style="color: rgba(255, 255, 255, 0.7); font-size: 0.85em; margin-top: 4px; margin-bottom: 0;">
+                                                <i class="bi bi-clock"></i> Duration: ${timestamp}
+                                            </p>` : ''
+                                        }
+                                    </div>
                                 </div>
                             `;
                             
@@ -3623,24 +4386,28 @@
                         if (item.objects) {
                             // Objects format
                             div.innerHTML = `
-                                <span class="timecode-badge">${item.time}</span>
-                                <div>
-                                    <p style="font-weight: 600; margin-bottom: 8px; color: rgba(255, 255, 255, 0.9);">${item.text}</p>
-                                    <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9em;">
-                                        <i class="bi bi-box"></i> ${item.objects.join(', ')}
-                                    </p>
+                                <div style="display: flex; align-items: flex-start; gap: 16px;">
+                                    <span class="timecode-badge" style="flex-shrink: 0; min-width: 60px; text-align: center;">${item.time}</span>
+                                    <div style="flex: 1;">
+                                        <p style="font-weight: 600; margin-bottom: 8px; color: rgba(255, 255, 255, 0.9); margin-top: 0;">${item.text}</p>
+                                        <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9em; margin: 0;">
+                                            <i class="bi bi-box"></i> ${item.objects.join(', ')}
+                                        </p>
+                                    </div>
                                 </div>
                             `;
                         } else if (item.value !== undefined) {
                             // Chart data
                             const barWidth = (item.value / 10) * 100;
                             div.innerHTML = `
-                                <span class="timecode-badge">${item.time}</span>
-                                <div style="flex: 1;">
-                                    <div style="display: flex; align-items: center; gap: 10px;">
-                                        <span style="font-weight: 600; color: rgba(255, 255, 255, 0.9);">${item.value}</span>
-                                        <div style="flex: 1; height: 20px; background: var(--light); border-radius: 10px; overflow: hidden;">
-                                            <div style="width: ${barWidth}%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 0.5s ease;"></div>
+                                <div style="display: flex; align-items: center; gap: 16px;">
+                                    <span class="timecode-badge" style="flex-shrink: 0; min-width: 60px; text-align: center;">${item.time}</span>
+                                    <div style="flex: 1;">
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <span style="font-weight: 600; color: rgba(255, 255, 255, 0.9);">${item.value}</span>
+                                            <div style="flex: 1; height: 20px; background: var(--light); border-radius: 10px; overflow: hidden;">
+                                                <div style="width: ${barWidth}%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 0.5s ease;"></div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -3648,9 +4415,11 @@
                         } else {
                             // Regular text with timecode
                             div.innerHTML = `
-                                <span class="timecode-badge">${item.time}</span>
-                                <div>
-                                    <p style="line-height: 1.6; color: rgba(255, 255, 255, 0.85);">${item.text}</p>
+                                <div style="display: flex; align-items: flex-start; gap: 16px;">
+                                    <span class="timecode-badge" style="flex-shrink: 0; min-width: 60px; text-align: center;">${item.time}</span>
+                                    <div style="flex: 1;">
+                                        <p style="line-height: 1.6; color: rgba(255, 255, 255, 0.85); margin: 0;">${item.text}</p>
+                                    </div>
                                 </div>
                             `;
                         }
@@ -3673,13 +4442,37 @@
                 `;
                 container.appendChild(div);
             } else {
-                // Fallback for unknown format
+                // Fallback for unknown format - try to display whatever we have
+                console.log('Unknown result format, displaying raw data:', result);
                 const div = document.createElement('div');
                 div.className = 'insight-item';
-                div.innerHTML = `
-                    <h3 style="color: var(--primary); margin-bottom: 10px;">Analysis Result</h3>
-                    <p style="line-height: 1.6; color: rgba(255, 255, 255, 0.7);">Analysis completed. Please check the format.</p>
-                `;
+                
+                // Try to intelligently display the result
+                if (typeof result === 'object' && result !== null) {
+                    // Display as formatted JSON
+                    div.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 10px;">
+                            <i class="bi bi-code-square"></i> Analysis Result
+                        </h3>
+                        <pre style="white-space: pre-wrap; background: rgba(0, 0, 0, 0.3); padding: 15px; border-radius: 8px; color: rgba(255, 255, 255, 0.85); font-family: 'Fira Code', 'Monaco', monospace; font-size: 0.85em; overflow-x: auto;">
+${escapeHtml(JSON.stringify(result, null, 2))}</pre>
+                    `;
+                } else if (typeof result === 'string') {
+                    // Display as text
+                    div.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 10px;">
+                            <i class="bi bi-file-text"></i> Analysis Result
+                        </h3>
+                        <pre style="white-space: pre-wrap; color: rgba(255, 255, 255, 0.85); font-family: inherit; font-size: 0.95em; line-height: 1.6;">${escapeHtml(result)}</pre>
+                    `;
+                } else {
+                    // Unknown type
+                    div.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 10px;">Analysis Result</h3>
+                        <p style="line-height: 1.6; color: rgba(255, 255, 255, 0.7);">Analysis completed. Result format: ${typeof result}</p>
+                    `;
+                }
+                
                 container.appendChild(div);
             }
         }
@@ -3734,7 +4527,6 @@
             
             // Show timeline
             timeline.style.display = 'block';
-            document.getElementById('toggleChapters').style.display = 'block';
             
             // Clear existing markers
             const existingMarkers = timeline.querySelectorAll('.timeline-marker');
@@ -3795,30 +4587,6 @@
             return seconds;
         }
         
-        function toggleChapters() {
-            const chapters = document.getElementById('videoChapters');
-            chapters.classList.toggle('show');
-        }
-        
-        function updateChaptersList() {
-            const chaptersList = document.getElementById('chaptersList');
-            if (!chaptersList || videoMarkers.length === 0) return;
-            
-            chaptersList.innerHTML = videoMarkers.map((marker, index) => `
-                <div class="chapter-item" data-index="${index}" onclick="jumpToChapter(${index})">
-                    <span class="chapter-time">${marker.time}</span>
-                    <span>${marker.description.substring(0, 50)}${marker.description.length > 50 ? '...' : ''}</span>
-                </div>
-            `).join('');
-        }
-        
-        function jumpToChapter(index) {
-            if (videoMarkers[index]) {
-                seekToTime(videoMarkers[index].time);
-                updateActiveChapter();
-            }
-        }
-        
         function formatMessageText(text) {
             // Format timestamps as clickable links
             text = text.replace(/\[(\d{1,2}:\d{2}(?::\d{2})?)\]/g, 
@@ -3847,37 +4615,6 @@
             return text;
         }
         
-        function updateActiveChapter() {
-            const video = document.getElementById('videoPlayer');
-            if (!video || !video.duration) return;
-            
-            const currentTime = video.currentTime;
-            let activeIndex = -1;
-            
-            // Find the current chapter
-            for (let i = videoMarkers.length - 1; i >= 0; i--) {
-                const markerTime = parseTimeToSeconds(videoMarkers[i].time);
-                if (currentTime >= markerTime) {
-                    activeIndex = i;
-                    break;
-                }
-            }
-            
-            // Update UI if chapter changed
-            if (activeIndex !== currentChapterIndex) {
-                currentChapterIndex = activeIndex;
-                
-                // Update chapter list
-                const chapters = document.querySelectorAll('.chapter-item');
-                chapters.forEach((ch, i) => {
-                    if (i === activeIndex) {
-                        ch.classList.add('active');
-                    } else {
-                        ch.classList.remove('active');
-                    }
-                });
-            }
-        }
         
         function enableChat() {
             const chatMessages = document.getElementById('chatMessages');
@@ -4103,16 +4840,11 @@
         }
         
         const loadingMessages = {
-            download: [
-                "Connecting to video source...",
-                "Downloading video content...",
-                "Processing video data...",
-                "Almost there..."
-            ],
             process: [
                 "Extracting video frames...",
                 "Preparing for analysis...",
-                "Optimizing video quality..."
+                "Optimizing video quality...",
+                "Processing video data..."
             ],
             analyze: [
                 "AI is analyzing your video...",
@@ -4140,7 +4872,8 @@
         }
         
         // Complete flow with loading - nothing shows until analysis is done
-        async function processVideoComplete() {
+        // Removed processVideoComplete - only upload is supported
+        /*async function processVideoComplete() {
             const url = document.getElementById('videoUrl').value.trim();
             if (!url) {
                 showAlert('<i class="bi bi-exclamation-triangle"></i> Please enter a video URL', 'error');
@@ -4149,8 +4882,8 @@
             
             // Show loading overlay
             showLoading('Downloading video...', 'Please wait while we fetch your video');
-            updateLoadingStep('download', 'active');
-            startMessageRotation('download');
+            updateLoadingStep('process', 'active');
+            startMessageRotation('process');
             
             try {
                 // Step 1: Download video
@@ -4170,8 +4903,6 @@
                 currentVideo = downloadData;
                 
                 // Update loading state
-                updateLoadingStep('download', 'completed');
-                updateLoadingStep('process', 'active');
                 showLoading('Processing video...', 'Preparing your video for analysis');
                 startMessageRotation('process');
                 
@@ -4227,7 +4958,7 @@
             }
         }
         
-        function showCompleteUI(videoData, analysisData) {
+        /*function showCompleteUI(videoData, analysisData) {
             // Remove centered class from input
             document.getElementById('inputSection').classList.remove('centered');
             
@@ -4290,12 +5021,9 @@
                 }
             }, 300);
             
-            // Clear URL input
-            document.getElementById('videoUrl').value = '';
-            
             // Show success message
             showAlert('<i class="bi bi-check-circle"></i> Video analysis complete!', 'success');
-        }
+        }*/
         
         // Video Player Custom Controls
         function initializeVideoControls() {
@@ -4542,6 +5270,11 @@
         
         // Initialize video controls when video is loaded
         document.addEventListener('DOMContentLoaded', () => {
+            // Open info modal on page load
+            setTimeout(() => {
+                openInfoModal();
+            }, 500);
+            
             const observer = new MutationObserver((mutations) => {
                 mutations.forEach((mutation) => {
                     if (mutation.addedNodes.length) {
