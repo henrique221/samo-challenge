@@ -183,25 +183,39 @@ class VideoAnalyzer:
             
             # Parse response
             try:
-                # Try to extract JSON from response
                 response_text = response.text
-                # Find JSON in response
+                
+                # Try to extract JSON from markdown code block first
                 import re
-                json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
-                if json_match:
-                    analysis_data = json.loads(json_match.group())
+                json_in_markdown = re.search(r'```json\n([\s\S]*?)\n```', response_text)
+                if json_in_markdown:
+                    # Parse JSON from markdown block
+                    analysis_data = json.loads(json_in_markdown.group(1))
                 else:
-                    # Fallback to plain text
-                    analysis_data = {'analysis': response_text}
-            except:
-                analysis_data = {'analysis': response.text}
+                    # Try to find raw JSON
+                    json_match = re.search(r'\{.*\}', response_text, re.DOTALL)
+                    if json_match:
+                        analysis_data = json.loads(json_match.group())
+                    else:
+                        # Fallback to plain text
+                        analysis_data = {'summary': response_text}
+            except Exception as e:
+                print(f"Error parsing response: {e}")
+                analysis_data = {'summary': response.text}
+            
+            # Make sure we return a flat structure
+            # Remove any nested 'analysis' keys
+            while isinstance(analysis_data, dict) and 'analysis' in analysis_data and len(analysis_data) == 1:
+                analysis_data = analysis_data['analysis']
+            
+            analysis_content = analysis_data
             
             return {
                 'status': 'success',
                 'mode': mode,
                 'mode_emoji': mode_config['emoji'],
                 'mode_description': mode_config['description'],
-                'analysis': analysis_data,
+                'analysis': analysis_content,
                 'timestamp': time.time()
             }
             

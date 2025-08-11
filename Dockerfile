@@ -11,10 +11,7 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     wget \
     curl \
-    software-properties-common \
-    && add-apt-repository ppa:tomtomtom/yt-dlp \
-    && apt-get update \
-    && apt-get install -y yt-dlp \
+    git \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -24,9 +21,12 @@ WORKDIR /app
 # Copy requirements file first
 COPY requirements.txt .
 
-# Install Python dependencies
-RUN pip3 install flask google-generativeai
-RUN pip3 install -r requirements.txt
+# Install Python dependencies and update yt-dlp to absolute latest
+RUN pip3 install --upgrade pip && \
+    pip3 install flask google-generativeai && \
+    pip3 install -r requirements.txt && \
+    pip3 install --upgrade --force-reinstall --no-cache-dir \
+    "git+https://github.com/yt-dlp/yt-dlp.git@master"
 
 # Copy application files
 COPY app.py .

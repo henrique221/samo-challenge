@@ -572,8 +572,8 @@
         }
         
         .btn-analyze-modern:hover {
-            transform: scale(1.05);
-            box-shadow: var(--glow-orange);
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
         }
         
         .btn-analyze-modern:active {
@@ -1490,6 +1490,27 @@
             background: var(--primary-dark);
         }
         
+        /* Clickable timestamp styles */
+        .timecode-badge.clickable {
+            position: relative !important;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            transform: none !important;
+            top: auto !important;
+            left: auto !important;
+            display: inline-block;
+        }
+        
+        .timecode-badge.clickable:hover {
+            background: var(--primary-dark) !important;
+            transform: scale(1.05) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .timecode-badge.clickable:active {
+            transform: scale(0.98) !important;
+        }
+        
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -1842,6 +1863,33 @@
             color: #1e40af;
             border: 1px solid #bfdbfe;
         }
+        
+        /* Example Video Buttons */
+        .example-video-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .example-video-btn:hover {
+            background: rgba(255, 107, 53, 0.15);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+        }
+        
+        .example-video-btn i {
+            font-size: 1em;
+        }
     </style>
 </head>
 <body>
@@ -1899,10 +1947,22 @@
             <p>Advanced Video Intelligence & Real-time Analysis</p>
         </div>
         
-        <!-- URL Input -->
+        <!-- URL/Upload Input -->
         <div class="input-section centered" id="inputSection">
             <div id="alert" class="alert"></div>
-            <form id="analyzeForm">
+            
+            <!-- Input Type Selector -->
+            <div class="input-type-selector" style="display: flex; gap: 10px; justify-content: center; margin-bottom: 20px;">
+                <button class="input-type-btn active" onclick="switchInputType('url')" data-type="url" style="padding: 10px 20px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+                    <i class="bi bi-link-45deg"></i> YouTube URL
+                </button>
+                <button class="input-type-btn" onclick="switchInputType('upload')" data-type="upload" style="padding: 10px 20px; background: var(--surface-light); color: white; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s;">
+                    <i class="bi bi-cloud-upload"></i> Upload Video
+                </button>
+            </div>
+            
+            <!-- URL Input Form -->
+            <form id="analyzeForm" class="input-form" data-type="url">
                 <div class="video-input-container">
                     <div class="video-input-wrapper">
                         <i class="bi bi-link-45deg input-icon"></i>
@@ -1918,6 +1978,68 @@
                     </div>
                 </div>
             </form>
+            
+            <!-- File Upload Form -->
+            <form id="uploadForm" class="input-form" data-type="upload" style="display: none;">
+                <div class="video-input-container">
+                    <div class="upload-area" style="border: 2px dashed var(--border); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.3s;" 
+                         onclick="document.getElementById('videoFile').click();"
+                         ondrop="handleDrop(event);" 
+                         ondragover="handleDragOver(event);" 
+                         ondragleave="handleDragLeave(event);">
+                        <i class="bi bi-cloud-upload" style="font-size: 48px; color: var(--primary); margin-bottom: 10px; display: block;"></i>
+                        <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 10px;">Drag and drop your video here or click to browse</p>
+                        <p style="color: rgba(255, 255, 255, 0.5); font-size: 0.9em;">Supported formats: MP4, AVI, MOV, MKV, WEBM (Max 500MB)</p>
+                        <input type="file" 
+                               id="videoFile" 
+                               accept="video/*,.mp4,.avi,.mov,.mkv,.webm"
+                               style="display: none;"
+                               onchange="handleFileSelect(event);">
+                    </div>
+                    <div id="fileInfo" style="margin-top: 15px; display: none;">
+                        <div style="background: var(--surface-light); padding: 10px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="bi bi-file-earmark-play" style="font-size: 24px; color: var(--primary);"></i>
+                                <div>
+                                    <p id="fileName" style="margin: 0; font-weight: 500;"></p>
+                                    <p id="fileSize" style="margin: 0; font-size: 0.85em; color: rgba(255, 255, 255, 0.6);"></p>
+                                </div>
+                            </div>
+                            <button type="button" onclick="clearFileSelection()" style="background: none; border: none; color: var(--error); cursor: pointer; padding: 5px;">
+                                <i class="bi bi-x-circle" style="font-size: 20px;"></i>
+                            </button>
+                        </div>
+                        <button type="submit" class="btn-analyze-modern" style="width: 100%; margin-top: 15px;">
+                            <i class="bi bi-play-circle-fill"></i>
+                            <span>Analyze Video</span>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Example Videos -->
+            <div style="margin-top: 20px; text-align: center;">
+                <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.9em; margin-bottom: 12px;">
+                    <i class="bi bi-lightbulb"></i> Try these example videos:
+                </p>
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button onclick="loadExampleVideo('https://www.youtube.com/watch?v=Ata9cSC2WpM')" 
+                            class="example-video-btn"
+                            title="Angular in 100 Seconds">
+                        <i class="bi bi-play-circle"></i> Angular Tutorial
+                    </button>
+                    <button onclick="loadExampleVideo('https://www.youtube.com/watch?v=8eVXTyIZ1Hs')" 
+                            class="example-video-btn"
+                            title="What Is Agile Methodology?">
+                        <i class="bi bi-play-circle"></i> What Is Agile Methodology?
+                    </button>
+                    <button onclick="loadExampleVideo('https://www.youtube.com/watch?v=YysKbNk1tj0')" 
+                            class="example-video-btn"
+                            title="How to start with React native">
+                        <i class="bi bi-play-circle"></i> How to start with React Native
+                    </button>
+                </div>
+            </div>
         </div>
         
         <!-- Main Content Grid -->
@@ -2118,6 +2240,12 @@
             await processVideoComplete();
         });
         
+        // Upload form submit
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            await uploadAndAnalyzeVideo();
+        });
+        
         // Video player event listeners
         document.getElementById('videoPlayer').addEventListener('loadedmetadata', function() {
             setupVideoTimeline();
@@ -2181,6 +2309,317 @@
                 setTimeout(() => {
                     alert.style.display = 'none';
                 }, 5000);
+            }
+        }
+        
+        function loadExampleVideo(url) {
+            document.getElementById('videoUrl').value = url;
+            // Optional: auto-submit the form
+            document.getElementById('analyzeForm').dispatchEvent(new Event('submit'));
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // File upload handling functions
+        let selectedFile = null;
+        
+        function switchInputType(type) {
+            // Update button states
+            document.querySelectorAll('.input-type-btn').forEach(btn => {
+                if (btn.dataset.type === type) {
+                    btn.classList.add('active');
+                    btn.style.background = 'var(--primary)';
+                } else {
+                    btn.classList.remove('active');
+                    btn.style.background = 'var(--surface-light)';
+                }
+            });
+            
+            // Show/hide forms
+            document.querySelectorAll('.input-form').forEach(form => {
+                if (form.dataset.type === type) {
+                    form.style.display = 'block';
+                } else {
+                    form.style.display = 'none';
+                }
+            });
+            
+            // Clear any alerts
+            document.getElementById('alert').style.display = 'none';
+        }
+        
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                validateAndShowFile(file);
+            }
+        }
+        
+        function handleDrop(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const uploadArea = event.currentTarget;
+            uploadArea.style.borderColor = 'var(--border)';
+            uploadArea.style.background = 'transparent';
+            
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                validateAndShowFile(files[0]);
+            }
+        }
+        
+        function handleDragOver(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const uploadArea = event.currentTarget;
+            uploadArea.style.borderColor = 'var(--primary)';
+            uploadArea.style.background = 'rgba(76, 175, 80, 0.1)';
+        }
+        
+        function handleDragLeave(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const uploadArea = event.currentTarget;
+            uploadArea.style.borderColor = 'var(--border)';
+            uploadArea.style.background = 'transparent';
+        }
+        
+        function validateAndShowFile(file) {
+            // Check file type
+            const validTypes = ['video/mp4', 'video/avi', 'video/quicktime', 'video/x-matroska', 'video/webm'];
+            const extension = file.name.split('.').pop().toLowerCase();
+            const validExtensions = ['mp4', 'avi', 'mov', 'mkv', 'webm'];
+            
+            if (!validTypes.includes(file.type) && !validExtensions.includes(extension)) {
+                showAlert('Please select a valid video file (MP4, AVI, MOV, MKV, WEBM)', 'error');
+                return;
+            }
+            
+            // Check file size (500MB limit)
+            const maxSize = 500 * 1024 * 1024; // 500MB in bytes
+            if (file.size > maxSize) {
+                showAlert('File size exceeds 500MB limit', 'error');
+                return;
+            }
+            
+            // Store file and show info
+            selectedFile = file;
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatFileSize(file.size);
+            document.getElementById('fileInfo').style.display = 'block';
+            
+            // Hide upload area
+            document.querySelector('.upload-area').style.display = 'none';
+        }
+        
+        function clearFileSelection() {
+            selectedFile = null;
+            document.getElementById('videoFile').value = '';
+            document.getElementById('fileInfo').style.display = 'none';
+            document.querySelector('.upload-area').style.display = 'block';
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+        
+        function displayVideoInfo(info) {
+            // Display video information in the UI
+            if (!info) return;
+            
+            const titleElement = document.getElementById('videoTitle');
+            const metaElement = document.getElementById('videoMeta');
+            
+            if (titleElement) {
+                titleElement.innerHTML = `<i class="bi bi-play-circle"></i> ${info.title || 'Uploaded Video'}`;
+            }
+            
+            if (metaElement) {
+                const duration = info.duration || 0;
+                const minutes = Math.floor(duration / 60);
+                const seconds = Math.floor(duration % 60);
+                const durationStr = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                let metaHtml = `<span><i class="bi bi-clock"></i> ${durationStr}</span>`;
+                
+                if (info.width && info.height) {
+                    metaHtml += ` <span><i class="bi bi-aspect-ratio"></i> ${info.width}x${info.height}</span>`;
+                }
+                
+                if (info.fps) {
+                    metaHtml += ` <span><i class="bi bi-speedometer2"></i> ${Math.round(info.fps)}fps</span>`;
+                }
+                
+                if (info.codec) {
+                    metaHtml += ` <span><i class="bi bi-file-code"></i> ${info.codec.toUpperCase()}</span>`;
+                }
+                
+                metaElement.innerHTML = metaHtml;
+            }
+            
+            // Show the video info section
+            const videoInfoSection = document.getElementById('videoInfo');
+            if (videoInfoSection) {
+                videoInfoSection.style.display = 'block';
+            }
+        }
+        
+        async function uploadAndAnalyzeVideo() {
+            if (!selectedFile) {
+                showAlert('Please select a video file', 'error');
+                return;
+            }
+            
+            // Show loading overlay - same as YouTube flow
+            showLoading('Uploading video...', 'Please wait while we upload your video');
+            updateLoadingStep('download', 'active');
+            startMessageRotation('download');
+            
+            try {
+                // Step 1: Upload video
+                const formData = new FormData();
+                formData.append('video', selectedFile);
+                
+                const uploadResponse = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!uploadResponse.ok) {
+                    throw new Error('Upload failed');
+                }
+                
+                const uploadData = await uploadResponse.json();
+                
+                if (!uploadData.success) {
+                    throw new Error(uploadData.error || 'Upload failed');
+                }
+                
+                // Store video data (same as download flow)
+                currentVideo = uploadData;
+                currentVideo.filename = uploadData.filename;  // Ensure filename is set in currentVideo
+                currentVideoFile = uploadData.filename;
+                
+                // Update loading state
+                updateLoadingStep('download', 'completed');
+                updateLoadingStep('process', 'active');
+                showLoading('Processing video...', 'Preparing your video for analysis');
+                startMessageRotation('process');
+                
+                // Fetch transcription and wait for it
+                if (uploadData.filename) {
+                    const transcription = await fetchTranscription(uploadData.filename);
+                    if (transcription && currentVideo) {
+                        currentVideo.transcription = transcription;
+                        console.log('Transcription ready for chat');
+                    }
+                }
+                
+                // Wait a bit for visual effect
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Step 2: Analyze video
+                updateLoadingStep('process', 'completed');
+                updateLoadingStep('analyze', 'active');
+                showLoading('Analyzing video...', 'AI is processing your video');
+                startMessageRotation('analyze');
+                
+                const analyzeResponse = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        filename: uploadData.filename,
+                        mode: 'summary'
+                    })
+                });
+                
+                const analyzeData = await analyzeResponse.json();
+                
+                if (!analyzeData.success) {
+                    throw new Error(analyzeData.error || 'Analysis failed');
+                }
+                
+                // Store analysis result
+                currentVideo.analysis = analyzeData.result;
+                
+                // Complete loading
+                updateLoadingStep('analyze', 'completed');
+                showLoading('Almost ready...', 'Preparing your results');
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Hide loading overlay and show main content (same as YouTube flow)
+                hideLoading();
+                document.getElementById('inputSection').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'grid';
+                
+                // Load video player
+                const videoPlayer = document.getElementById('videoPlayer');
+                videoPlayer.src = `/stream/${uploadData.filename}`;
+                videoPlayer.style.display = 'block';
+                document.getElementById('videoPlaceholder').style.display = 'none';
+                
+                // Initialize custom video controls
+                setTimeout(initializeVideoControls, 100);
+                
+                // Show video info
+                if (uploadData.video_info) {
+                    displayVideoInfo(uploadData.video_info);
+                }
+                
+                // Show analysis section with animation
+                const analysisSection = document.getElementById('analysisSection');
+                if (analysisSection) {
+                    analysisSection.style.display = 'block';
+                    analysisSection.classList.add('fade-in');
+                }
+                
+                // Show analysis mode selector
+                document.getElementById('modeSelector').style.display = 'block';
+                document.getElementById('analysisLoading').style.display = 'none';
+                
+                // Display the initial analysis results
+                displayAnalysisResults(analyzeData.result);
+                
+                // Update UI state
+                document.getElementById('analysisStatus').style.display = 'inline-block';
+                
+                // Enable all mode pills
+                document.querySelectorAll('.mode-pill').forEach(btn => {
+                    btn.disabled = false;
+                });
+                
+                // Show chat section after analysis is complete
+                const chatSection = document.getElementById('chatSection');
+                if (chatSection) {
+                    setTimeout(() => {
+                        chatSection.style.display = 'block';
+                        chatSection.classList.add('fade-in');
+                        enableChat();
+                    }, 300);
+                }
+                
+                // Clear file selection for next upload
+                clearFileSelection();
+                
+                // Show success message
+                showAlert('<i class="bi bi-check-circle"></i> Video uploaded and analyzed successfully!', 'success');
+                
+            } catch (error) {
+                hideLoading();
+                showAlert(`<i class="bi bi-exclamation-triangle"></i> ${error.message}`, 'error');
+                console.error('Upload/Analysis error:', error);
             }
         }
         
@@ -2470,9 +2909,96 @@
             container.innerHTML = '';
             videoMarkers = []; // Reset markers
             
+            console.log('Displaying analysis results:', result);
+            
             // Check if result has analysis object (new format from real API)
             if (result.analysis) {
-                const analysis = result.analysis;
+                let analysis = result.analysis;
+                
+                // Handle nested analysis structure from Gemini API
+                if (typeof analysis.analysis === 'string') {
+                    // Parse JSON from markdown code block
+                    try {
+                        // Extract JSON from markdown code block if present
+                        const jsonMatch = analysis.analysis.match(/```json\n([\s\S]*?)\n```/);
+                        if (jsonMatch) {
+                            analysis = JSON.parse(jsonMatch[1]);
+                            console.log('Parsed JSON from markdown:', analysis);
+                        } else {
+                            // Try direct parse if no markdown wrapper
+                            analysis = JSON.parse(analysis.analysis);
+                            console.log('Parsed direct JSON:', analysis);
+                        }
+                    } catch (e) {
+                        console.error('Failed to parse analysis JSON:', e);
+                        // Fallback to display as text
+                        const textDiv = document.createElement('div');
+                        textDiv.className = 'insight-item';
+                        textDiv.innerHTML = `<pre style="white-space: pre-wrap; color: rgba(255, 255, 255, 0.85);">${analysis.analysis}</pre>`;
+                        container.appendChild(textDiv);
+                        return;
+                    }
+                } else if (typeof analysis === 'object' && analysis.analysis) {
+                    // Double nested structure
+                    analysis = analysis.analysis;
+                }
+                
+                console.log('Final analysis object:', analysis);
+                
+                // Handle various nested structures from different modes
+                // Sentiment mode - flatten sentiment_analysis structure
+                if (analysis.sentiment_analysis) {
+                    Object.assign(analysis, {
+                        overall_sentiment: analysis.sentiment_analysis.overall_sentiment,
+                        emotional_moments: analysis.sentiment_analysis.emotional_moments,
+                        mood_changes: analysis.sentiment_analysis.mood_changes,
+                        energy_variations: analysis.sentiment_analysis.energy_level_variations || analysis.sentiment_analysis.energy_variations
+                    });
+                    console.log('Flattened sentiment analysis structure');
+                }
+                
+                // Objects mode - flatten objects_analysis or scenes_analysis structure
+                if (analysis.objects_analysis) {
+                    Object.assign(analysis, analysis.objects_analysis);
+                    console.log('Flattened objects analysis structure');
+                }
+                if (analysis.scenes_analysis) {
+                    Object.assign(analysis, analysis.scenes_analysis);
+                    console.log('Flattened scenes analysis structure');
+                }
+                
+                // Educational mode - flatten educational_content structure
+                if (analysis.educational_content) {
+                    Object.assign(analysis, analysis.educational_content);
+                    console.log('Flattened educational content structure');
+                }
+                
+                // Key moments - flatten key_moments_analysis structure
+                if (analysis.key_moments_analysis) {
+                    Object.assign(analysis, analysis.key_moments_analysis);
+                    console.log('Flattened key moments structure');
+                }
+                
+                // Transcript - flatten transcript_analysis structure
+                if (analysis.transcript_analysis) {
+                    Object.assign(analysis, analysis.transcript_analysis);
+                    console.log('Flattened transcript structure');
+                }
+                
+                // Summary - flatten summary_analysis structure
+                if (analysis.summary_analysis) {
+                    Object.assign(analysis, analysis.summary_analysis);
+                    console.log('Flattened summary structure');
+                }
+                
+                // Generic flattening - if there's only one top-level key that's an object
+                // This handles any other nested structure patterns
+                const keys = Object.keys(analysis);
+                if (keys.length === 1 && typeof analysis[keys[0]] === 'object' && !Array.isArray(analysis[keys[0]])) {
+                    const nestedData = analysis[keys[0]];
+                    console.log(`Flattening single nested structure with key: ${keys[0]}`);
+                    Object.assign(analysis, nestedData);
+                }
                 
                 // Display summary if available
                 if (analysis.summary) {
@@ -2504,6 +3030,520 @@
                         </div>
                     `;
                     container.appendChild(topicsDiv);
+                }
+                
+                // Display title if available
+                if (analysis.title) {
+                    const titleDiv = document.createElement('div');
+                    titleDiv.className = 'insight-item';
+                    titleDiv.innerHTML = `
+                        <h2 style="color: var(--primary); margin-bottom: 10px; text-align: center;">
+                            ${analysis.title}
+                        </h2>
+                    `;
+                    container.appendChild(titleDiv);
+                }
+                
+                // Display educational content if available
+                if (analysis.learningObjectives) {
+                    const eduDiv = document.createElement('div');
+                    eduDiv.className = 'insight-item';
+                    eduDiv.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 10px;">
+                            <i class="bi bi-mortarboard"></i> Learning Objectives
+                        </h3>
+                        <ul style="color: rgba(255, 255, 255, 0.85); line-height: 1.8;">
+                            ${analysis.learningObjectives.map(obj => `<li>${obj}</li>`).join('')}
+                        </ul>
+                    `;
+                    container.appendChild(eduDiv);
+                }
+                
+                // Display main concepts for educational mode
+                if (analysis.mainConcepts && analysis.mainConcepts.length > 0) {
+                    const conceptsDiv = document.createElement('div');
+                    conceptsDiv.className = 'insight-item';
+                    
+                    // Check if mainConcepts is array of strings or objects
+                    const isStringArray = typeof analysis.mainConcepts[0] === 'string';
+                    
+                    if (isStringArray) {
+                        // Handle array of strings
+                        conceptsDiv.innerHTML = `
+                            <h3 style="color: var(--primary); margin-bottom: 10px;">
+                                <i class="bi bi-lightbulb"></i> Main Concepts
+                            </h3>
+                            <ul style="color: rgba(255, 255, 255, 0.85); line-height: 1.8;">
+                                ${analysis.mainConcepts.map(concept => `<li>${concept}</li>`).join('')}
+                            </ul>
+                        `;
+                        container.appendChild(conceptsDiv);
+                    } else {
+                        // Handle array of objects (original format)
+                        analysis.mainConcepts.forEach((concept, index) => {
+                            setTimeout(() => {
+                                const conceptDiv = document.createElement('div');
+                                conceptDiv.className = 'insight-item';
+                                conceptDiv.innerHTML = `
+                                    <h4 style="color: var(--primary); margin-bottom: 8px;">
+                                        <i class="bi bi-lightbulb"></i> ${concept.concept}
+                                    </h4>
+                                    <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 8px;">
+                                        ${concept.description}
+                                    </p>
+                                    ${concept.details ? `
+                                        <p style="color: rgba(255, 255, 255, 0.7); font-size: 0.9em;">
+                                            ${concept.details}
+                                        </p>
+                                    ` : ''}
+                                    ${concept.examples ? `
+                                        <div style="margin-top: 8px;">
+                                            ${concept.examples.map(ex => `
+                                                <div style="margin-left: 20px; color: rgba(255, 255, 255, 0.7); font-size: 0.9em;">
+                                                    • <strong>${ex.directive}:</strong> ${ex.description}
+                                                </div>
+                                            `).join('')}
+                                        </div>
+                                    ` : ''}
+                                `;
+                                container.appendChild(conceptDiv);
+                            }, index * 100);
+                        });
+                    }
+                }
+                
+                // Display examples with code blocks
+                if (analysis.examples && analysis.examples.length > 0) {
+                    const examplesDiv = document.createElement('div');
+                    examplesDiv.className = 'insight-item';
+                    examplesDiv.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">
+                            <i class="bi bi-code-slash"></i> Code Examples
+                        </h3>
+                    `;
+                    
+                    analysis.examples.forEach((example, index) => {
+                        const exampleItem = document.createElement('div');
+                        exampleItem.style.marginBottom = '20px';
+                        
+                        // Handle code as array or string
+                        const codeContent = Array.isArray(example.code) 
+                            ? example.code.join('\\n') 
+                            : example.code;
+                        
+                        exampleItem.innerHTML = `
+                            <div style="margin-bottom: 8px;">
+                                <p style="color: rgba(255, 255, 255, 0.85); font-size: 0.9em; margin-bottom: 8px;">
+                                    ${example.description}
+                                </p>
+                                <pre style="background: rgba(0, 0, 0, 0.4); padding: 12px; border-radius: 8px; 
+                                           border: 1px solid rgba(255, 255, 255, 0.1); overflow-x: auto;">
+                                    <code style="color: #f0f0f0; font-family: 'Fira Code', 'Monaco', monospace; font-size: 0.85em;">${escapeHtml(codeContent)}</code>
+                                </pre>
+                            </div>
+                        `;
+                        examplesDiv.appendChild(exampleItem);
+                    });
+                    
+                    container.appendChild(examplesDiv);
+                }
+                
+                // Display key takeaways
+                if (analysis.keyTakeaways && analysis.keyTakeaways.length > 0) {
+                    const takeawaysDiv = document.createElement('div');
+                    takeawaysDiv.className = 'insight-item';
+                    takeawaysDiv.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 10px;">
+                            <i class="bi bi-check-circle"></i> Key Takeaways
+                        </h3>
+                        <ul style="color: rgba(255, 255, 255, 0.85); line-height: 1.8;">
+                            ${analysis.keyTakeaways.map(takeaway => `<li>${takeaway}</li>`).join('')}
+                        </ul>
+                    `;
+                    container.appendChild(takeawaysDiv);
+                }
+                
+                // Display action items
+                if (analysis.actionItems && analysis.actionItems.length > 0) {
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'insight-item';
+                    actionsDiv.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 10px;">
+                            <i class="bi bi-list-task"></i> Action Items
+                        </h3>
+                        <ul style="color: rgba(255, 255, 255, 0.85); line-height: 1.8;">
+                            ${analysis.actionItems.map(item => `<li>${item}</li>`).join('')}
+                        </ul>
+                    `;
+                    container.appendChild(actionsDiv);
+                }
+                
+                // Display additional resources
+                if (analysis.additionalResources || analysis.resources) {
+                    const resourcesDiv = document.createElement('div');
+                    resourcesDiv.className = 'insight-item';
+                    const resources = analysis.additionalResources || analysis.resources;
+                    
+                    // Handle both string and array formats
+                    const resourcesList = Array.isArray(resources) 
+                        ? resources 
+                        : resources.split(',').map(r => r.trim());
+                    
+                    resourcesDiv.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 10px;">
+                            <i class="bi bi-link-45deg"></i> Additional Resources
+                        </h3>
+                        <ul style="color: rgba(255, 255, 255, 0.85); line-height: 1.8;">
+                            ${resourcesList.map(resource => `
+                                <li>
+                                    ${resource.startsWith('http') 
+                                        ? `<a href="${resource}" target="_blank" style="color: var(--primary); text-decoration: none; hover: underline;">${resource}</a>`
+                                        : resource
+                                    }
+                                </li>
+                            `).join('')}
+                        </ul>
+                    `;
+                    container.appendChild(resourcesDiv);
+                }
+                
+                // Display sentiment analysis
+                if (analysis.overall_sentiment || analysis.emotional_moments || analysis.mood_changes || analysis.energy_variations) {
+                    const sentimentDiv = document.createElement('div');
+                    sentimentDiv.className = 'insight-item';
+                    sentimentDiv.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">
+                            <i class="bi bi-emoji-smile"></i> Sentiment Analysis
+                        </h3>
+                    `;
+                    
+                    if (analysis.overall_sentiment) {
+                        const overallDiv = document.createElement('p');
+                        overallDiv.style.cssText = 'color: rgba(255, 255, 255, 0.9); margin-bottom: 15px;';
+                        overallDiv.innerHTML = `<strong>Overall Sentiment:</strong> ${analysis.overall_sentiment}`;
+                        sentimentDiv.appendChild(overallDiv);
+                    }
+                    
+                    // Display emotional moments with clickable timestamps
+                    if (analysis.emotional_moments && analysis.emotional_moments.length > 0) {
+                        const momentsContainer = document.createElement('div');
+                        momentsContainer.style.marginTop = '10px';
+                        
+                        const momentsTitle = document.createElement('h4');
+                        momentsTitle.style.cssText = 'color: rgba(255, 255, 255, 0.7); font-size: 0.9em; margin-bottom: 10px;';
+                        momentsTitle.textContent = 'Emotional Moments:';
+                        momentsContainer.appendChild(momentsTitle);
+                        
+                        analysis.emotional_moments.forEach((moment, index) => {
+                            const timeStr = moment.timestamp || moment.time || '00:00';
+                            const emotion = moment.emotion || 'Unknown';
+                            const description = moment.description || '';
+                            
+                            // Create moment item div
+                            const momentItem = document.createElement('div');
+                            momentItem.className = 'emotion-item';
+                            momentItem.style.cssText = `
+                                margin-bottom: 8px; 
+                                padding: 10px; 
+                                background: rgba(255, 255, 255, 0.05); 
+                                border-radius: 8px; 
+                                border-left: 3px solid var(--primary); 
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                            `;
+                            
+                            // No hover effect on container - only on timestamp badge
+                            
+                            momentItem.innerHTML = `
+                                <span class="timecode-badge clickable" 
+                                      style="cursor: pointer; margin-right: 10px; background: var(--primary); padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: white; font-weight: 600;">
+                                    ${timeStr}
+                                </span>
+                                <div style="flex: 1;">
+                                    <div style="color: rgba(255, 255, 255, 0.85); font-weight: 600;">${emotion}</div>
+                                    ${description ? `<div style="color: rgba(255, 255, 255, 0.6); font-size: 0.9em; margin-top: 4px;">${description}</div>` : ''}
+                                </div>
+                            `;
+                            
+                            // Add click handler to entire moment item
+                            momentItem.onclick = (e) => {
+                                e.stopPropagation();
+                                console.log('Clicked emotional moment with time:', timeStr);
+                                seekToTime(timeStr);
+                            };
+                            momentItem.title = 'Click to jump to ' + timeStr;
+                            
+                            // Add with animation delay
+                            setTimeout(() => {
+                                momentsContainer.appendChild(momentItem);
+                            }, index * 50);
+                        });
+                        
+                        sentimentDiv.appendChild(momentsContainer);
+                    }
+                    
+                    // Display mood changes with clickable timestamps
+                    if (analysis.mood_changes && analysis.mood_changes.length > 0) {
+                        const moodContainer = document.createElement('div');
+                        moodContainer.style.marginTop = '15px';
+                        
+                        const moodTitle = document.createElement('h4');
+                        moodTitle.style.cssText = 'color: rgba(255, 255, 255, 0.7); font-size: 0.9em; margin-bottom: 10px;';
+                        moodTitle.textContent = 'Mood Changes:';
+                        moodContainer.appendChild(moodTitle);
+                        
+                        analysis.mood_changes.forEach((change, index) => {
+                            const timeStr = change.timestamp || change.time || '00:00';
+                            const mood = change.mood_change || change.mood || change.description || 'Unknown mood';
+                            const description = change.description || '';
+                            
+                            const changeItem = document.createElement('div');
+                            changeItem.className = 'mood-change-item';
+                            changeItem.style.cssText = `
+                                margin-bottom: 8px; 
+                                padding: 10px; 
+                                background: rgba(255, 255, 255, 0.05); 
+                                border-radius: 8px; 
+                                border-left: 3px solid #9c27b0; 
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                            `;
+                            
+                            // No hover effect on container - only on timestamp badge
+                            
+                            changeItem.innerHTML = `
+                                <span class="timecode-badge clickable" 
+                                      style="cursor: pointer; margin-right: 10px; background: #9c27b0; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: white; font-weight: 600;">
+                                    ${timeStr}
+                                </span>
+                                <div style="flex: 1;">
+                                    <div style="color: rgba(255, 255, 255, 0.85);">
+                                        <i class="bi bi-arrow-right" style="margin: 0 5px;"></i> ${mood}
+                                    </div>
+                                    ${description ? `<div style="color: rgba(255, 255, 255, 0.6); font-size: 0.9em; margin-top: 4px; margin-left: 20px;">${description}</div>` : ''}
+                                </div>
+                            `;
+                            
+                            changeItem.onclick = (e) => {
+                                e.stopPropagation();
+                                console.log('Clicked mood change with time:', timeStr);
+                                seekToTime(timeStr);
+                            };
+                            changeItem.title = 'Click to jump to ' + timeStr;
+                            
+                            setTimeout(() => {
+                                moodContainer.appendChild(changeItem);
+                            }, index * 50);
+                        });
+                        
+                        sentimentDiv.appendChild(moodContainer);
+                    }
+                    
+                    // Display energy level variations with clickable timestamps
+                    if (analysis.energy_variations && analysis.energy_variations.length > 0) {
+                        const energyContainer = document.createElement('div');
+                        energyContainer.style.marginTop = '15px';
+                        
+                        const energyTitle = document.createElement('h4');
+                        energyTitle.style.cssText = 'color: rgba(255, 255, 255, 0.7); font-size: 0.9em; margin-bottom: 10px;';
+                        energyTitle.textContent = 'Energy Level Variations:';
+                        energyContainer.appendChild(energyTitle);
+                        
+                        analysis.energy_variations.forEach((variation, index) => {
+                            const timeStr = variation.timestamp || variation.time || '00:00';
+                            const level = variation.energy_level || variation.level || variation.energy || 'Unknown';
+                            const description = variation.description || '';
+                            
+                            const energyItem = document.createElement('div');
+                            energyItem.className = 'energy-variation-item';
+                            energyItem.style.cssText = `
+                                margin-bottom: 8px; 
+                                padding: 10px; 
+                                background: rgba(255, 255, 255, 0.05); 
+                                border-radius: 8px; 
+                                border-left: 3px solid #ff9800; 
+                                cursor: pointer;
+                                display: flex;
+                                align-items: center;
+                            `;
+                            
+                            // No hover effect on container - only on timestamp badge
+                            
+                            energyItem.innerHTML = `
+                                <span class="timecode-badge clickable" 
+                                      style="cursor: pointer; margin-right: 10px; background: #ff9800; padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: white; font-weight: 600;">
+                                    ${timeStr}
+                                </span>
+                                <div style="flex: 1;">
+                                    <div style="color: rgba(255, 255, 255, 0.85);">
+                                        <i class="bi bi-activity" style="margin-right: 5px;"></i> Energy: ${level}
+                                    </div>
+                                    ${description ? `<div style="color: rgba(255, 255, 255, 0.6); font-size: 0.9em; margin-top: 4px;">${description}</div>` : ''}
+                                </div>
+                            `;
+                            
+                            energyItem.onclick = (e) => {
+                                e.stopPropagation();
+                                console.log('Clicked energy variation with time:', timeStr);
+                                seekToTime(timeStr);
+                            };
+                            energyItem.title = 'Click to jump to ' + timeStr;
+                            
+                            setTimeout(() => {
+                                energyContainer.appendChild(energyItem);
+                            }, index * 50);
+                        });
+                        
+                        sentimentDiv.appendChild(energyContainer);
+                    }
+                    
+                    container.appendChild(sentimentDiv);
+                }
+                
+                // Display detected objects
+                if (analysis.objects || analysis.scenes) {
+                    const objectsDiv = document.createElement('div');
+                    objectsDiv.className = 'insight-item';
+                    objectsDiv.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">
+                            <i class="bi bi-eye"></i> Detected Objects & Scenes
+                        </h3>
+                    `;
+                    
+                    if (analysis.scenes && analysis.scenes.length > 0) {
+                        const scenesContainer = document.createElement('div');
+                        scenesContainer.style.marginTop = '10px';
+                        
+                        analysis.scenes.forEach((scene, index) => {
+                            setTimeout(() => {
+                                const timeStr = scene.timestamp || scene.time || '00:00';
+                                const location = scene.location || scene.setting || 'Scene';
+                                
+                                // Create scene item div
+                                const sceneItem = document.createElement('div');
+                                sceneItem.className = 'scene-item';
+                                sceneItem.style.cssText = `
+                                    margin-bottom: 12px; 
+                                    padding: 12px; 
+                                    background: rgba(255, 255, 255, 0.05); 
+                                    border-radius: 8px; 
+                                    border-left: 3px solid var(--primary); 
+                                    cursor: pointer;
+                                `;
+                                
+                                // Build HTML content
+                                let sceneHtml = `
+                                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                                        <span class="timecode-badge clickable" 
+                                              onclick="seekToTime('${timeStr.replace(/'/g, "\\'")}')"
+                                              style="cursor: pointer; margin-right: 10px; background: var(--primary); padding: 4px 8px; border-radius: 4px; font-size: 0.85em; color: white; font-weight: 600;">
+                                            ${timeStr}
+                                        </span>
+                                        <strong style="color: rgba(255, 255, 255, 0.9);">${location}</strong>
+                                    </div>
+                                `;
+                                
+                                if (scene.objects && scene.objects.length > 0) {
+                                    sceneHtml += `
+                                        <div style="margin-left: 20px; color: rgba(255, 255, 255, 0.7); font-size: 0.9em;">
+                                            <i class="bi bi-box" style="margin-right: 5px;"></i>
+                                            Objects: ${Array.isArray(scene.objects) ? scene.objects.join(', ') : scene.objects}
+                                        </div>
+                                    `;
+                                }
+                                
+                                if (scene.people) {
+                                    sceneHtml += `
+                                        <div style="margin-left: 20px; color: rgba(255, 255, 255, 0.7); font-size: 0.9em;">
+                                            <i class="bi bi-people" style="margin-right: 5px;"></i>
+                                            People: ${scene.people}
+                                        </div>
+                                    `;
+                                }
+                                
+                                sceneItem.innerHTML = sceneHtml;
+                                sceneItem.title = 'Click to jump to ' + timeStr;
+                                
+                                // Add click handler to entire scene item
+                                sceneItem.addEventListener('click', function(e) {
+                                    // Don't trigger if clicking on the timestamp badge itself
+                                    if (!e.target.classList.contains('timecode-badge')) {
+                                        console.log('Clicked scene container with time:', timeStr);
+                                        seekToTime(timeStr);
+                                    }
+                                });
+                                
+                                // Find the timestamp badge and ensure it has click handler
+                                const badge = sceneItem.querySelector('.timecode-badge');
+                                if (badge) {
+                                    badge.style.cursor = 'pointer';
+                                }
+                                
+                                scenesContainer.appendChild(sceneItem);
+                            }, index * 50);
+                        });
+                        
+                        objectsDiv.appendChild(scenesContainer);
+                    } else if (analysis.objects && analysis.objects.length > 0) {
+                        const objectsContainer = document.createElement('div');
+                        objectsContainer.style.cssText = 'display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;';
+                        objectsContainer.innerHTML = analysis.objects.map(obj => `
+                            <span style="background: var(--surface-light); padding: 6px 12px; border-radius: 20px; font-size: 0.9em; color: rgba(255, 255, 255, 0.85); border: 1px solid var(--border);">
+                                <i class="bi bi-tag" style="margin-right: 4px;"></i>${obj}
+                            </span>
+                        `).join('');
+                        objectsDiv.appendChild(objectsContainer);
+                    }
+                    
+                    container.appendChild(objectsDiv);
+                }
+                
+                // Display transcript sections with clickable timestamps like key moments
+                if (analysis.transcript && Array.isArray(analysis.transcript)) {
+                    // Add transcript header
+                    const headerDiv = document.createElement('div');
+                    headerDiv.className = 'insight-item';
+                    headerDiv.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">
+                            <i class="bi bi-chat-text"></i> Transcript
+                        </h3>
+                    `;
+                    container.appendChild(headerDiv);
+                    
+                    // Display each transcript entry as a separate clickable item
+                    analysis.transcript.forEach((section, index) => {
+                        setTimeout(() => {
+                            const transcriptItem = document.createElement('div');
+                            transcriptItem.className = 'insight-item timecode';
+                            transcriptItem.style.cursor = 'pointer';
+                            
+                            // Get timestamp and text
+                            const timestamp = section.timestamp || section.time || '00:00';
+                            const speaker = section.speaker || '';
+                            const text = section.text || section.content || '';
+                            
+                            transcriptItem.innerHTML = `
+                                <span class="timecode-badge">${timestamp}</span>
+                                <div style="flex: 1;">
+                                    ${speaker ? `<strong style="color: var(--primary); font-size: 0.9em;">${speaker}:</strong>` : ''}
+                                    <p style="line-height: 1.6; color: rgba(255, 255, 255, 0.85); margin-top: 4px;">
+                                        ${text}
+                                    </p>
+                                </div>
+                            `;
+                            
+                            // Add click handler for video seek
+                            transcriptItem.onclick = () => {
+                                console.log('Clicked transcript with time:', timestamp);
+                                seekToTime(timestamp);
+                            };
+                            transcriptItem.title = 'Click to jump to ' + timestamp;
+                            
+                            container.appendChild(transcriptItem);
+                        }, index * 50); // Stagger the appearance
+                    });
                 }
                 
                 // Display moments with clickable timestamps
