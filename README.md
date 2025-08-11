@@ -36,6 +36,10 @@ This project is my submission for the **"Show Us Your Prompt-Crafting Superpower
 - **Containerization**: Docker & Docker Compose
 - **Frontend**: HTML5, CSS3, JavaScript (Vanilla)
 
+## 🎥 Demo Video
+
+https://github.com/user-attachments/assets/video_demo/video.mp4
+
 ## 🚀 Quick Start (< 5 minutes)
 
 ### Prerequisites
