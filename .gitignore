@@ -51,16 +51,6 @@ secrets.json
 
 # Downloaded videos
 downloads/
-*.mp4
-*.webm
-*.mkv
-*.avi
-*.mov
-*.flv
-*.wmv
-*.mpg
-*.mpeg
-*.3gp
 
 # Temporary files
 *.tmp
