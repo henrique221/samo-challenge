@@ -216,11 +216,27 @@ def transcribe_video():
             return jsonify({'error': 'Arquivo não encontrado'}), 404
         
         # Get quick transcription
-        transcription = video_analyzer.get_quick_transcription(str(file_path))
+        transcription_result = video_analyzer.get_quick_transcription(str(file_path))
         
-        # Cache it
-        session['video_transcriptions'][filename] = transcription
-        session.modified = True
+        # Check if transcription was successful
+        if isinstance(transcription_result, dict):
+            if 'error' in transcription_result:
+                # Return error response
+                return jsonify({
+                    'success': False,
+                    'error': transcription_result.get('error', 'Failed to transcribe video'),
+                    'transcription': transcription_result.get('transcription', '')
+                })
+            # Extract transcription text from result
+            transcription = transcription_result.get('transcription', '')
+        else:
+            # Handle case where result is just a string
+            transcription = transcription_result
+        
+        # Cache successful transcription
+        if transcription:
+            session['video_transcriptions'][filename] = transcription
+            session.modified = True
         
         return jsonify({
             'success': True,

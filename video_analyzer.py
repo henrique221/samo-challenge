@@ -23,10 +23,10 @@ class VideoAnalyzer:
         self.model = None
         self.stream_model = None
         if GEMINI_API_KEY:
-            self.model = genai.GenerativeModel('gemini-1.5-flash')
+            self.model = genai.GenerativeModel('gemini-2.5-flash')
             # Configure for streaming
             self.stream_model = genai.GenerativeModel(
-                'gemini-1.5-flash',
+                'gemini-2.5-flash',
                 generation_config=genai.GenerationConfig(
                     temperature=0.7,
                     max_output_tokens=2048,
@@ -116,26 +116,52 @@ class VideoAnalyzer:
     def upload_video_file(self, file_path: str) -> Optional[Any]:
         """Upload video file to Gemini for processing"""
         if not self.model:
+            print("Model not initialized - check API key")
             return None
             
         try:
-            print(f"Uploading video: {file_path}")
+            # Check if file exists
+            if not Path(file_path).exists():
+                print(f"File does not exist: {file_path}")
+                return None
+                
+            # Check file size
+            file_size = Path(file_path).stat().st_size / (1024 * 1024)  # MB
+            print(f"Uploading video: {file_path} (Size: {file_size:.2f} MB)")
+            
+            # Upload to Gemini
+            # Check if upload_file is available (added in newer versions)
+            if not hasattr(genai, 'upload_file'):
+                print("upload_file not available in this version of google-generativeai")
+                print("Please upgrade: pip install google-generativeai>=0.7.0")
+                return None
+                
             video_file = genai.upload_file(path=file_path)
             
             # Wait for processing
-            while video_file.state.name == "PROCESSING":
-                print("Processing video...")
+            max_attempts = 60  # 5 minutes max
+            attempts = 0
+            while video_file.state.name == "PROCESSING" and attempts < max_attempts:
+                print(f"Processing video... (attempt {attempts + 1}/{max_attempts})")
                 time.sleep(5)
                 video_file = genai.get_file(video_file.name)
+                attempts += 1
             
             if video_file.state.name == "FAILED":
-                raise ValueError("Video processing failed")
+                print(f"Video processing failed with state: {video_file.state}")
+                raise ValueError(f"Video processing failed: {video_file.state}")
             
-            print("Video uploaded successfully")
+            if attempts >= max_attempts:
+                print("Video processing timeout")
+                raise ValueError("Video processing timeout after 5 minutes")
+            
+            print(f"Video uploaded successfully, state: {video_file.state.name}")
             return video_file
             
         except Exception as e:
-            print(f"Error uploading video: {e}")
+            print(f"Error uploading video: {type(e).__name__}: {str(e)}")
+            import traceback
+            traceback.print_exc()
             return None
     
     def analyze_video(self, video_path: str, mode: str = 'summary', 

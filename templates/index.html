@@ -2523,6 +2523,12 @@
                     if (transcription && currentVideo) {
                         currentVideo.transcription = transcription;
                         console.log('Transcription ready for chat');
+                    } else {
+                        console.warn('No transcription available - chat may be limited');
+                        // Set a placeholder or empty transcription
+                        if (currentVideo) {
+                            currentVideo.transcription = '';
+                        }
                     }
                 }
                 
@@ -2788,13 +2794,19 @@
                 
                 const data = await response.json();
                 
-                if (data.success) {
+                if (data.success && data.transcription) {
                     console.log('Transcription loaded:', data.cached ? 'from cache' : 'fresh');
                     // Store transcription for later use in chat
                     if (currentVideo) {
                         currentVideo.transcription = data.transcription;
                     }
                     return data.transcription;
+                } else if (!data.success) {
+                    console.warn('Transcription failed:', data.error || 'Unknown error');
+                    // Return empty transcription or show warning
+                    if (data.error && data.error.includes('API not configured')) {
+                        console.log('Using mock transcription due to missing API configuration');
+                    }
                 }
                 return null;
             } catch (error) {
