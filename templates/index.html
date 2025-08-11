@@ -1247,6 +1247,7 @@
             border: 1px dashed rgba(255, 107, 53, 0.5);
             animation: slideDown 0.3s ease;
             position: relative;
+            z-index: 10;
         }
         
         .custom-prompt-card::before {
@@ -1265,7 +1266,7 @@
         .custom-prompt-card textarea {
             width: 100%;
             padding: 14px;
-            background: var(--surface);
+            background: var(--surface-hover);
             border: 1px solid var(--border);
             border-radius: 8px;
             min-height: 100px;
@@ -1274,6 +1275,16 @@
             font-size: 14px;
             color: var(--text-primary);
             transition: all 0.3s;
+            cursor: text;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            position: relative;
+            z-index: 20;
+            pointer-events: auto !important;
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
         }
         
         .custom-prompt-card textarea::placeholder {
@@ -1283,8 +1294,8 @@
         .custom-prompt-card textarea:focus {
             outline: none;
             border-color: var(--primary);
-            background: var(--surface-hover);
-            box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.2);
+            background: rgba(42, 42, 42, 0.95);
+            box-shadow: 0 0 0 2px rgba(255, 107, 53, 0.3);
         }
         
         /* Analysis Button */
@@ -1729,6 +1740,9 @@
             display: none;
             text-align: center;
             padding: 40px;
+            position: relative;
+            z-index: 1;
+            pointer-events: none;
         }
         
         .spinner {
@@ -3191,6 +3205,12 @@
             const mode = selectedMode;
             const customPrompt = document.getElementById('customPrompt').value;
             
+            // Validate custom prompt if custom mode is selected
+            if (mode === 'custom' && !customPrompt.trim()) {
+                showAlert('Please enter a custom analysis prompt', 'error');
+                return;
+            }
+            
             // Update button state
             const btn = document.getElementById('runAnalysisBtn');
             btn.disabled = true;
@@ -3513,6 +3533,53 @@
                     const nestedData = analysis[keys[0]];
                     console.log(`Flattening single nested structure with key: ${keys[0]}`);
                     Object.assign(analysis, nestedData);
+                }
+                
+                // Handle custom mode analysis array
+                if (currentMode === 'custom' && analysis.analysis && Array.isArray(analysis.analysis)) {
+                    console.log('Handling custom mode analysis array');
+                    const customAnalysis = analysis.analysis;
+                    const customDiv = document.createElement('div');
+                    customDiv.className = 'insight-item';
+                    customDiv.innerHTML = `
+                        <h3 style="color: var(--primary); margin-bottom: 15px;">
+                            <i class="bi bi-list-check"></i> Custom Analysis Results
+                        </h3>
+                    `;
+                    
+                    const analysisList = document.createElement('div');
+                    customAnalysis.forEach((point) => {
+                        const pointDiv = document.createElement('div');
+                        pointDiv.style.cssText = `
+                            margin-bottom: 16px;
+                            padding: 14px;
+                            background: rgba(255, 255, 255, 0.05);
+                            border-radius: 10px;
+                            border-left: 3px solid var(--primary);
+                        `;
+                        
+                        pointDiv.innerHTML = `
+                            <div style="display: flex; align-items: start; gap: 10px;">
+                                <span style="color: var(--primary); font-weight: bold; font-size: 1.1em; min-width: 25px;">
+                                    ${point.point_number || '•'}
+                                </span>
+                                <div style="flex: 1;">
+                                    <div style="color: rgba(255, 255, 255, 0.95); font-weight: 600; margin-bottom: 8px; font-size: 1.05em;">
+                                        ${point.title || 'Analysis Point'}
+                                    </div>
+                                    <div style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">
+                                        ${point.description || ''}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        analysisList.appendChild(pointDiv);
+                    });
+                    
+                    customDiv.appendChild(analysisList);
+                    container.appendChild(customDiv);
+                    return; // Exit early for custom mode
                 }
                 
                 // Display summary if available

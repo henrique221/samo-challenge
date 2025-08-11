@@ -382,9 +382,9 @@ class VideoAnalyzer:
             mode_config = self.modes.get(mode, self.modes['summary'])
             
             if mode == 'custom' and custom_prompt:
-                prompt = custom_prompt
+                prompt = mode_config['prompt_template'].format(user_prompt=custom_prompt)
             else:
-                prompt = mode_config['prompt']
+                prompt = mode_config.get('prompt', self.modes['summary']['prompt'])
             
             # Build the full prompt with transcript
             full_prompt = f"""Analyze this video transcript and {prompt}

@@ -21,12 +21,10 @@ WORKDIR /app
 # Copy requirements file first
 COPY requirements.txt .
 
-# Install Python dependencies and update yt-dlp to absolute latest
+# Install Python dependencies
 RUN pip3 install --upgrade pip && \
     pip3 install flask google-generativeai && \
-    pip3 install -r requirements.txt && \
-    pip3 install --upgrade --force-reinstall --no-cache-dir \
-    "git+https://github.com/yt-dlp/yt-dlp.git@master"
+    pip3 install -r requirements.txt
 
 # Copy application files
 COPY app.py .
