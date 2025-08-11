@@ -3535,51 +3535,172 @@
                     Object.assign(analysis, nestedData);
                 }
                 
-                // Handle custom mode analysis array
-                if (currentMode === 'custom' && analysis.analysis && Array.isArray(analysis.analysis)) {
-                    console.log('Handling custom mode analysis array');
+                // Handle custom mode analysis (can be array or object)
+                if (currentMode === 'custom' && analysis.analysis) {
+                    console.log('Handling custom mode analysis:', analysis.analysis);
                     const customAnalysis = analysis.analysis;
-                    const customDiv = document.createElement('div');
-                    customDiv.className = 'insight-item';
-                    customDiv.innerHTML = `
-                        <h3 style="color: var(--primary); margin-bottom: 15px;">
-                            <i class="bi bi-list-check"></i> Custom Analysis Results
-                        </h3>
-                    `;
                     
-                    const analysisList = document.createElement('div');
-                    customAnalysis.forEach((point) => {
-                        const pointDiv = document.createElement('div');
-                        pointDiv.style.cssText = `
-                            margin-bottom: 16px;
-                            padding: 14px;
-                            background: rgba(255, 255, 255, 0.05);
-                            border-radius: 10px;
-                            border-left: 3px solid var(--primary);
+                    // Check if it's an array format
+                    if (Array.isArray(customAnalysis)) {
+                        console.log('Custom analysis is array format');
+                        const customDiv = document.createElement('div');
+                        customDiv.className = 'insight-item';
+                        customDiv.innerHTML = `
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">
+                                <i class="bi bi-list-check"></i> Custom Analysis Results
+                            </h3>
                         `;
                         
-                        pointDiv.innerHTML = `
-                            <div style="display: flex; align-items: start; gap: 10px;">
-                                <span style="color: var(--primary); font-weight: bold; font-size: 1.1em; min-width: 25px;">
-                                    ${point.point_number || '•'}
-                                </span>
-                                <div style="flex: 1;">
-                                    <div style="color: rgba(255, 255, 255, 0.95); font-weight: 600; margin-bottom: 8px; font-size: 1.05em;">
-                                        ${point.title || 'Analysis Point'}
-                                    </div>
-                                    <div style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">
-                                        ${point.description || ''}
+                        const analysisList = document.createElement('div');
+                        customAnalysis.forEach((point) => {
+                            const pointDiv = document.createElement('div');
+                            pointDiv.style.cssText = `
+                                margin-bottom: 16px;
+                                padding: 14px;
+                                background: rgba(255, 255, 255, 0.05);
+                                border-radius: 10px;
+                                border-left: 3px solid var(--primary);
+                            `;
+                            
+                            pointDiv.innerHTML = `
+                                <div style="display: flex; align-items: start; gap: 10px;">
+                                    <span style="color: var(--primary); font-weight: bold; font-size: 1.1em; min-width: 25px;">
+                                        ${point.point_number || '•'}
+                                    </span>
+                                    <div style="flex: 1;">
+                                        <div style="color: rgba(255, 255, 255, 0.95); font-weight: 600; margin-bottom: 8px; font-size: 1.05em;">
+                                            ${point.title || 'Analysis Point'}
+                                        </div>
+                                        <div style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">
+                                            ${point.description || ''}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            `;
+                            
+                            analysisList.appendChild(pointDiv);
+                        });
+                        
+                        customDiv.appendChild(analysisList);
+                        container.appendChild(customDiv);
+                        return; // Exit early for custom mode
+                    } 
+                    // Handle object format (like the response you showed)
+                    else if (typeof customAnalysis === 'object') {
+                        console.log('Custom analysis is object format');
+                        const customDiv = document.createElement('div');
+                        customDiv.className = 'insight-item';
+                        customDiv.innerHTML = `
+                            <h3 style="color: var(--primary); margin-bottom: 15px;">
+                                <i class="bi bi-list-check"></i> Custom Analysis Results
+                            </h3>
                         `;
                         
-                        analysisList.appendChild(pointDiv);
-                    });
-                    
-                    customDiv.appendChild(analysisList);
-                    container.appendChild(customDiv);
-                    return; // Exit early for custom mode
+                        const analysisList = document.createElement('div');
+                        
+                        // Sort keys to display in order
+                        const sortedKeys = Object.keys(customAnalysis).sort();
+                        
+                        sortedKeys.forEach((key) => {
+                            const value = customAnalysis[key];
+                            const pointDiv = document.createElement('div');
+                            pointDiv.style.cssText = `
+                                margin-bottom: 16px;
+                                padding: 14px;
+                                background: rgba(255, 255, 255, 0.05);
+                                border-radius: 10px;
+                                border-left: 3px solid var(--primary);
+                            `;
+                            
+                            // Extract point number from key if it exists (e.g., "1_video_identification" -> "1")
+                            const pointMatch = key.match(/^(\d+)_/);
+                            const pointNumber = pointMatch ? pointMatch[1] : '';
+                            const cleanKey = key.replace(/^\d+_/, '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                            
+                            // Handle different value types
+                            if (typeof value === 'string') {
+                                pointDiv.innerHTML = `
+                                    <div style="display: flex; align-items: start; gap: 10px;">
+                                        ${pointNumber ? `<span style="color: var(--primary); font-weight: bold; font-size: 1.1em; min-width: 25px;">${pointNumber}</span>` : ''}
+                                        <div style="flex: 1;">
+                                            <div style="color: rgba(255, 255, 255, 0.95); font-weight: 600; margin-bottom: 8px; font-size: 1.05em;">
+                                                ${cleanKey}
+                                            </div>
+                                            <div style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">
+                                                ${value}
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            } else if (typeof value === 'object' && !Array.isArray(value)) {
+                                // Handle nested objects
+                                let content = `
+                                    <div style="display: flex; align-items: start; gap: 10px;">
+                                        ${pointNumber ? `<span style="color: var(--primary); font-weight: bold; font-size: 1.1em; min-width: 25px;">${pointNumber}</span>` : ''}
+                                        <div style="flex: 1;">
+                                            <div style="color: rgba(255, 255, 255, 0.95); font-weight: 600; margin-bottom: 8px; font-size: 1.05em;">
+                                                ${value.title || cleanKey}
+                                            </div>
+                                `;
+                                
+                                // Display object properties
+                                Object.entries(value).forEach(([subKey, subValue]) => {
+                                    if (subKey !== 'title') {
+                                        const formattedKey = subKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                                        content += `
+                                            <div style="margin-top: 8px;">
+                                                <span style="color: var(--primary); font-size: 0.9em;">${formattedKey}:</span>
+                                                <span style="color: rgba(255, 255, 255, 0.8); margin-left: 8px;">
+                                                    ${Array.isArray(subValue) ? subValue.join(', ') : subValue}
+                                                </span>
+                                            </div>
+                                        `;
+                                    }
+                                });
+                                
+                                content += `</div></div>`;
+                                pointDiv.innerHTML = content;
+                            } else if (Array.isArray(value)) {
+                                // Handle arrays
+                                let content = `
+                                    <div style="display: flex; align-items: start; gap: 10px;">
+                                        ${pointNumber ? `<span style="color: var(--primary); font-weight: bold; font-size: 1.1em; min-width: 25px;">${pointNumber}</span>` : ''}
+                                        <div style="flex: 1;">
+                                            <div style="color: rgba(255, 255, 255, 0.95); font-weight: 600; margin-bottom: 8px; font-size: 1.05em;">
+                                                ${cleanKey}
+                                            </div>
+                                            <div style="color: rgba(255, 255, 255, 0.8); line-height: 1.6;">
+                                `;
+                                
+                                value.forEach((item, index) => {
+                                    if (typeof item === 'object') {
+                                        content += `
+                                            <div style="margin-bottom: 10px; padding: 10px; background: rgba(255, 255, 255, 0.03); border-radius: 6px;">
+                                                ${item.claim ? `<div style="color: var(--primary); margin-bottom: 4px;"><strong>Claim:</strong> ${item.claim}</div>` : ''}
+                                                ${item.evidence ? `<div style="color: rgba(255, 255, 255, 0.75);"><strong>Evidence:</strong> ${item.evidence}</div>` : ''}
+                                                ${!item.claim && !item.evidence ? JSON.stringify(item) : ''}
+                                            </div>
+                                        `;
+                                    } else {
+                                        content += `
+                                            <div style="margin-bottom: 6px;">
+                                                <span style="color: var(--primary);">•</span> ${item}
+                                            </div>
+                                        `;
+                                    }
+                                });
+                                
+                                content += `</div></div></div>`;
+                                pointDiv.innerHTML = content;
+                            }
+                            
+                            analysisList.appendChild(pointDiv);
+                        });
+                        
+                        customDiv.appendChild(analysisList);
+                        container.appendChild(customDiv);
+                        return; // Exit early for custom mode
+                    }
                 }
                 
                 // Display summary if available
