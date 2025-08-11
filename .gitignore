@@ -1,0 +1,176 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# API Keys
+*_api_key*
+*_API_KEY*
+config.ini
+secrets.json
+
+# Downloaded videos
+downloads/
+*.mp4
+*.webm
+*.mkv
+*.avi
+*.mov
+*.flv
+*.wmv
+*.mpg
+*.mpeg
+*.3gp
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+*.old
+tmp/
+temp/
+
+# Logs
+*.log
+logs/
+*.log.*
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Session files
+flask_session/
+sessions/
+
+# Cache
+.cache/
+*.cache
+
+# OS files
+Thumbs.db
+desktop.ini
+
+# Node (if using any JS tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# Google Gemini API
+.gemini/
+gemini_cache/
+
+# YouTube transcripts cache
+transcripts_cache/
+youtube_cache/
+
+# Flask instance folder
+instance/
+
+# Coverage reports
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# Unit test / coverage reports
+.tox/
+.nox/
+.hypothesis/
+
+# Translations
+*.mo
+*.pot
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# Custom
+local_settings.py
+*.local.*
+
+# Claude
+.claude/

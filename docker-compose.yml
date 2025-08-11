@@ -1,0 +1,17 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: youtube-downloader
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./downloads:/app/downloads
+      - ./app.py:/app/app.py
+      - ./templates:/app/templates
+    environment:
+      - FLASK_ENV=development
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - USE_MOCK_ANALYZER=${USE_MOCK_ANALYZER:-true}
+    restart: unless-stopped

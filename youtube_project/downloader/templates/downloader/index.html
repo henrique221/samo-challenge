@@ -1,0 +1,207 @@
+{% extends 'downloader/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <!-- Download Form Card -->
+        <div class="card mb-4 fade-in">
+            <div class="card-header">
+                <i class="bi bi-download"></i> Download Video or Audio
+            </div>
+            <div class="card-body">
+                <form method="post" id="downloadForm">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.url.id_for_label }}" class="form-label">
+                            <i class="bi bi-link-45deg"></i> YouTube URL
+                        </label>
+                        {{ form.url }}
+                        <small class="form-text text-muted">
+                            Enter a YouTube video or playlist URL
+                        </small>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.download_type.id_for_label }}" class="form-label">
+                                <i class="bi bi-file-earmark"></i> Download Type
+                            </label>
+                            {{ form.download_type }}
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.quality.id_for_label }}" class="form-label">
+                                <i class="bi bi-gear"></i> Quality
+                            </label>
+                            {{ form.quality }}
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-youtube">
+                            <i class="bi bi-cloud-download"></i> Start Download
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" id="getInfoBtn">
+                            <i class="bi bi-info-circle"></i> Get Video Info
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Video Info Card (hidden by default) -->
+        <div class="card mb-4 d-none" id="videoInfoCard">
+            <div class="card-header">
+                <i class="bi bi-info-square"></i> Video Information
+            </div>
+            <div class="card-body" id="videoInfoContent">
+                <!-- Info will be loaded here -->
+            </div>
+        </div>
+        
+        <!-- Features -->
+        <div class="row mb-4">
+            <div class="col-md-4 text-center mb-3">
+                <div class="card h-100 fade-in">
+                    <div class="card-body">
+                        <i class="bi bi-lightning-charge feature-icon"></i>
+                        <h5>Fast Downloads</h5>
+                        <p class="text-muted">High-speed downloads using yt-dlp</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-3">
+                <div class="card h-100 fade-in">
+                    <div class="card-body">
+                        <i class="bi bi-music-note-beamed feature-icon"></i>
+                        <h5>Audio Extraction</h5>
+                        <p class="text-muted">Convert videos to MP3 format</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 text-center mb-3">
+                <div class="card h-100 fade-in">
+                    <div class="card-body">
+                        <i class="bi bi-collection-play feature-icon"></i>
+                        <h5>Playlist Support</h5>
+                        <p class="text-muted">Download entire playlists</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Recent Downloads -->
+        {% if downloads %}
+        <div class="card fade-in">
+            <div class="card-header">
+                <i class="bi bi-clock-history"></i> Recent Downloads
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    {% for download in downloads|slice:":5" %}
+                    <div class="list-group-item download-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">
+                                    {% if download.title %}
+                                        {{ download.title|truncatechars:50 }}
+                                    {% else %}
+                                        {{ download.url|truncatechars:50 }}
+                                    {% endif %}
+                                </h6>
+                                <small class="text-muted">
+                                    <i class="bi bi-calendar"></i> {{ download.created_at|date:"d/m/Y H:i" }}
+                                    {% if download.file_size %}
+                                        | <i class="bi bi-hdd"></i> {{ download.get_file_size_mb }} MB
+                                    {% endif %}
+                                    {% if download.duration %}
+                                        | <i class="bi bi-clock"></i> {{ download.get_duration_formatted }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                            <div class="ms-2">
+                                <span class="status-badge status-{{ download.status }}">
+                                    {% if download.status == 'downloading' %}
+                                        <span class="spinner-border spinner-border-sm me-1"></span>
+                                    {% endif %}
+                                    {{ download.get_status_display }}
+                                </span>
+                                {% if download.status == 'completed' %}
+                                    <a href="{% url 'downloader:download_file' download.id %}" 
+                                       class="btn btn-sm btn-outline-success ms-2">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="text-center mt-3">
+                    <a href="{% url 'downloader:history' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-right"></i> View All History
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Get video info
+        $('#getInfoBtn').click(function() {
+            var url = $('#id_url').val();
+            if (!url) {
+                alert('Please enter a YouTube URL');
+                return;
+            }
+            
+            var btn = $(this);
+            btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm"></span> Loading...');
+            
+            $.ajax({
+                url: "{% url 'downloader:video_info' %}",
+                data: { url: url },
+                success: function(data) {
+                    var html = `
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5>${data.title}</h5>
+                                <p class="text-muted">
+                                    <i class="bi bi-person"></i> ${data.uploader}<br>
+                                    <i class="bi bi-eye"></i> ${data.view_count.toLocaleString()} views<br>
+                                    <i class="bi bi-clock"></i> Duration: ${Math.floor(data.duration/60)}:${(data.duration%60).toString().padStart(2, '0')}
+                                </p>
+                            </div>
+                            <div class="col-md-4">
+                                ${data.thumbnail ? `<img src="${data.thumbnail}" class="img-fluid rounded">` : ''}
+                            </div>
+                        </div>
+                    `;
+                    $('#videoInfoContent').html(html);
+                    $('#videoInfoCard').removeClass('d-none');
+                },
+                error: function() {
+                    alert('Failed to get video information');
+                },
+                complete: function() {
+                    btn.prop('disabled', false).html('<i class="bi bi-info-circle"></i> Get Video Info');
+                }
+            });
+        });
+        
+        // Change quality options based on download type
+        $('#id_download_type').change(function() {
+            if ($(this).val() === 'audio') {
+                $('#id_quality').prop('disabled', true);
+            } else {
+                $('#id_quality').prop('disabled', false);
+            }
+        });
+    });
+</script>
+{% endblock %}
