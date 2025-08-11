@@ -374,9 +374,8 @@ MIT License - See LICENSE file for details
 
 ---
 
-## 🎬 Demo & Contact
+## 🎬 Contact
 
-- **Live Demo**: [Watch the demo video](https://drive.google.com/file/d/13ET1gWRlKaVdeK0s8i6JMuQPLNDE6nsi/view?usp=sharing)
 - **GitHub**: [github.com/yourusername/samo-challenge](https://github.com/henrique221/samo-challenge)
 - **Contact**: hborgesdasilva9294@gmail.com
 
