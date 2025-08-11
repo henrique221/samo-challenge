@@ -38,7 +38,7 @@ This project is my submission for the **"Show Us Your Prompt-Crafting Superpower
 
 ## 🎥 Demo Video
 
-https://github.com/user-attachments/assets/video_demo/video.mp4
+[Watch Demo Video](video_demo/video.mp4)
 
 ## 🚀 Quick Start (< 5 minutes)
 
